@@ -1,6 +1,6 @@
 const fs = require("fs-extra");
 import _ from "lodash";
-import { log } from "../ts/helpers";
+ 
 
 import { convertExcelToJson } from "./excelToJson";
 import {
@@ -120,15 +120,15 @@ export const getQuestionsFromExcel = (
   //   masterQuestions.allQuestions[0]
   // );
 
-  const HOSTNAME = getEnv("PROJECT_1_HOSTNAME");
-  const defaultImage = getEnv("PROJECT_1_DEFAULT_MEDIA_FILE");
+ 
+ 
   // TASK 4
   const allQuestions = excelQuestions.map((excelQuestion) => {
     const categories: Category[] = excelQuestion[KATEGORIE].toLowerCase().split(",") as Category[];
     categories.forEach((cat) => allCategoriesSet.add(cat));
 
     const id = `id${excelQuestion[NUMER_PYTANIA]}`;
-    const m = excelQuestion[MEDIA] || defaultImage;
+    const m = excelQuestion[MEDIA] || "";
 
     const newQuestion: Question = {
       id,
@@ -197,7 +197,7 @@ export const getQuestionsFromExcel = (
   // console.log( "allQuestionsData.allQuestions[0] ===",allQuestionsData.allQuestions[0]);
   // console.log( "allQuestionsData.allQuestions.length ===",allQuestionsData.allQuestions.length);
 
-  log(
+  console.log(
     `ALL QUESTIONS DATA CREATED`,
     `---allQuestionsData.allQuestions.length===${allQuestionsData.allQuestions.length}`
   );

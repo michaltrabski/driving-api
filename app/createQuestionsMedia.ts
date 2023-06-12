@@ -3,7 +3,7 @@ const path = require("path");
 const sharp = require("sharp");
 const ffmpeg = require("fluent-ffmpeg");
 
-import { log } from "../ts/helpers";
+ 
 import {
   getEnv,
   isVideo,
@@ -26,7 +26,7 @@ export const resizeMedia = async () => {
     const newFileNameWidthPath = path.resolve(outputFolder, newFileName);
 
     if (!fs.existsSync(newFileNameWidthPath)) {
-      log("I TRY TO RESIZE THIS VIDEO / IMAGE",`originalFileName===${originalFileName}` , 
+      console.log("I TRY TO RESIZE THIS VIDEO / IMAGE",`originalFileName===${originalFileName}` , 
       `if there is an error maybe a file ${originalFileName} is broken, so remove this file maybe`,
       `Go to the folder: ${inputFolder}`,
       `and remove file: ${originalFileName}`
@@ -46,7 +46,7 @@ export const resizeMedia = async () => {
       }
     }
   }
-  log(`ALL FILES RESIZED:`, `--- NEW WIDTH ==> ${mediaWidth}px`, `--- FROM FOLDER ==> ${inputFolder}`,`--- TO FOLDER ==> ${outputFolder}`);
+  console.log(`ALL FILES RESIZED:`, `--- NEW WIDTH ==> ${mediaWidth}px`, `--- FROM FOLDER ==> ${inputFolder}`,`--- TO FOLDER ==> ${outputFolder}`);
 };
 
 const resizeVideo = async (

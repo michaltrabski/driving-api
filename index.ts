@@ -5,8 +5,8 @@ require("dotenv").config();
 import { createQuestionsData, ExcelFileInfo, getQuestionsFromExcel } from "./app/createQuestionsData";
 import { resizeMedia } from "./app/createQuestionsMedia";
 import { unzip } from "./app/unzip";
-import { getEnv, getLimit, isProduction, removeTransformedMedia, uploadMedia, uploadProject } from "./app/utils";
-import { log } from "./ts/helpers";
+import { getEnv, getLimit, isProduction, removeTransformedMedia    } from "./app/utils";
+ 
 
 const start = async () => {
   console.log("--------------------------START--------------------------");
@@ -22,10 +22,10 @@ const start = async () => {
 
     // await unzip();
     // await resizeMedia();
-    // await uploadMedia();
+ 
 
     // TAKS - process excel files to create allQuestionsData
-    // const { allQuestionsData, allQuestionsDataSlim } = createQuestionsData(getExcels());
+    const { allQuestionsData, allQuestionsDataSlim } = createQuestionsData(getExcels());
 
     // fs.outputJsonSync("results/allQuestionsData.json", allQuestionsData);
     // fs.outputJsonSync("results/allQuestionsDataSlim.json", allQuestionsDataSlim);

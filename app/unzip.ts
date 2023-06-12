@@ -1,12 +1,12 @@
-import { attr } from "cheerio/lib/api/attributes";
+ 
 import extract from "extract-zip";
-import { log } from "../ts/helpers";
+ 
 import { PageType } from "./types";
 import { getEnv, isProduction, readTextFileSync } from "./utils";
 
 const fs = require("fs-extra");
 const path = require("path");
-const cheerio = require("cheerio");
+ 
 
 const listOfMediaExtensionsFoundInZipFolders = new Set();
 
@@ -17,9 +17,9 @@ export const unzip = async () => {
   fs.ensureDirSync(unzipToFolder);
 
  
- log("1 take zipped files from folder folderWithZippedFiles:",folderWithZippedFiles, "2 and unzip them to folder unzipToFolder", unzipToFolder);
+ console.log("1 take zipped files from folder folderWithZippedFiles:",folderWithZippedFiles, "2 and unzip them to folder unzipToFolder", unzipToFolder);
   await unzipFiles(folderWithZippedFiles, unzipToFolder);
-  log(`ALL FILES UNZIPED:`, `--- FROM FOLDER ==> ${folderWithZippedFiles}`,`--- TO FOLDER ==> ${unzipToFolder}`);
+  console.log(`ALL FILES UNZIPED:`, `--- FROM FOLDER ==> ${folderWithZippedFiles}`,`--- TO FOLDER ==> ${unzipToFolder}`);
 };
 
 async function extractZip(source: string, target: string) {
@@ -58,8 +58,8 @@ const unzipFiles = async function (unzipFrom: string, unzipTo: string) {
             }
           }
 
-          log("FILES COPIED TO FOLDER ==>", unzipTo);
-          log("listOfMediaExtensionsFoundInZipFolders ==>", listOfMediaExtensionsFoundInZipFolders);
+          console.log("FILES COPIED TO FOLDER ==>", unzipTo);
+          console.log("listOfMediaExtensionsFoundInZipFolders ==>", listOfMediaExtensionsFoundInZipFolders);
 
           await unzipFiles(path.join(unzipFrom, "/", folderName), unzipTo);
         }
