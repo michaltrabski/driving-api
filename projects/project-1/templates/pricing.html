@@ -1,0 +1,120 @@
+<html lang="pl">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title> [[PAGE_TITLE]] </title>
+    <meta name="description" content="Official open source SVG icon library for Bootstrap">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+      .__none {
+        display: none !important;
+      }
+      .__block {
+        display: block !important;
+      }
+      .__inline {
+        display: inline !important;
+      }
+      .__inlineblock {
+        display: inline-block !important;
+      }
+      .__flex {
+        display: flex !important;
+      }
+      .michal-btn-primary {
+        color: #fff;
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+      }
+    </style>
+    <script defer="" src="./bundle.js?v.[[PROJECT_1_VERION]]"> </script>
+
+    <!-- JavaScript Bundle with Popper -->
+    <script defer="" src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+  </head>
+  <body class="michal-1 bg-dark text-light pt-3 mt-3 text-center text-md-start" data-hostname="[[HOSTNAME]]">
+
+    <!-- APP  -->
+    <div id="app">
+
+      <!-- NAVBAR  --> [[navbar]]
+
+      <!-- MAIN  -->
+      <main class="michal-2 pt-5">
+
+        <!-- CONTAINER  -->
+        <div class="michal-3 container-fluid">
+
+          <!-- ROW  -->
+          <div class="row">
+
+            <!-- LEFT SIDEBAR  -->
+            <div class="col-12 col-lg-6">
+
+              <!-- ROW ROW BLOG -->
+              <div class="row mb-2">
+                <div class="col">
+                  <h1 class="display-4 fw-normal">Cennik</h1>
+                  <p class="lead">Wybierz najlepszą dla Ciebie wersję testów.</p>
+
+                  <!-- ROW ROW ROW CARD -->
+                  <div class="row mb-2">
+                    <div class="col-12 col-lg-6">
+                      <div class="card mb-4 rounded-3 shadow-sm bg-dark">
+                        <div class="card-header py-3">
+                          <h4 class="my-0 fw-normal">Podstawowy</h4>
+                        </div>
+                        <div class="card-body test-start">
+                          <h1 class="card-title pricing-card-title"> 17zł<small class="text-muted fw-light">/1 miesiąc</small></h1>
+                          <ul class="list-unstyled mt-3 mb-4">
+                            <li>20 users included</li>
+                            <li>10 GB of storage</li>
+                            <li>Priority email support</li>
+                            <li>Help center access</li>
+                          </ul>
+                          <a href="#" class="w-100 btn btn-lg btn-success">Kup teraz 17zł
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                      <div class="card mb-4 rounded-3 shadow-sm bg-dark">
+                        <div class="card-header py-3">
+                          <h4 class="my-0 fw-normal">Zaawansowany</h4>
+                        </div>
+                        <div class="card-body test-start">
+                          <h1 class="card-title pricing-card-title">20zł<small class="text-muted fw-light">/3 miesiące</small></h1>
+                          <ul class="list-unstyled mt-3 mb-4">
+                            <li>20 users included</li>
+                            <li>10 GB of storage</li>
+                            <li>Priority email support</li>
+                            <li>Help center access</li>
+                          </ul>
+                          <a href="#" class="w-100 btn btn-lg btn-success">Kup teraz 20zł
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae nihil expedita corrupti, tempore numquam, error pariatur optio aliquam amet excepturi dignissimos voluptatibus in non quod ratione. Nesciunt repellendus harum animi.</p>
+                  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae nihil expedita corrupti, tempore numquam, error pariatur optio aliquam amet excepturi dignissimos voluptatibus in non quod ratione. Nesciunt repellendus harum animi.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- RIGHT SIDEBAR  -->
+            <div class="col-12 col-lg-6"> [[right_sidebar]] </div>
+
+            <!-- END ROW  -->
+          </div>
+
+          <!-- END CONTAINER  -->
+        </div>
+      </main>
+
+      <!-- FOOTER  --> [[footer]]
+
+      <!-- MAKE SURE ALL HTML CONTENT IS INSIDE div#app TO SUPPORT VUEJS  -->
+    </div>
+  </body>
+</html>

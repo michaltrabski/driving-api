@@ -1,0 +1,157 @@
+<html lang="pl">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title> [[PAGE_TITLE]] </title>
+    <meta name="description" content="Official open source SVG icon library for Bootstrap">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+      .__none {
+        display: none !important;
+      }
+      .__block {
+        display: block !important;
+      }
+      .__inline {
+        display: inline !important;
+      }
+      .__inlineblock {
+        display: inline-block !important;
+      }
+      .__flex {
+        display: flex !important;
+      }
+      .michal-btn-primary {
+        color: #fff;
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+      }
+    </style>
+    <script defer="" src="./bundle.js?v.[[PROJECT_1_VERION]]"> </script>
+
+    <!-- JavaScript Bundle with Popper -->
+    <script defer="" src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+  </head>
+  <body class="michal-1 bg-dark text-light pt-3 mt-3 text-center text-md-start">
+
+    <!-- APP  -->
+    <div id="app">
+
+      <!-- NAVBAR  --> [[navbar]]
+
+      <!-- MAIN  -->
+      <main class="michal-2 pt-5">
+
+        <!-- CONTAINER  -->
+        <div class="michal-3 container-fluid">
+
+          <!-- ROW  -->
+          <div class="row">
+
+            <!-- LEFT SIDEBAR  -->
+            <div class="col-12 col-lg-6">
+
+              <!-- ROW ROW  -->
+              <div class="row mb-2">
+                <div class="col">
+                  <h1 class="display-3 fw-bold"> Testy na prawo jazdy {{year}} </h1>
+                  <p class="lead"> Wszystkie pytania egzaminacyjne! Rozpocznij egzamin teoretyczny na prawo jazdy lub przeglądaj pytania testowe.</p>
+
+                  <!-- START LEARNING BUTTON  -->
+                  <div m-loop="[[all_categories]]" class="d-grid gap-2 mb-2">
+                    <a v-show="isSelectedCategory('xxx')" href="[[xxx_first_question_url]]" class="btn btn-primary btn-lg" role="button"> Rozpocznij naukę testów na prawo jazdy {{year}} kategorii XXX
+                    </a>
+                  </div>
+                  <div class="p-3">
+                    <a href="[[page_slug_pl_category]]"> Zmień domyślną kategorię pytań z testów na prawo jazdy jaką chcesz się uczyć!
+                    </a>
+                  </div>
+                  <p class="lead"> Ostatnią aktualizację bazy pytań testowych zrobiłem w
+                    <strong class="text-success"> {{styczniu}} {{year}} roku! </strong>
+                  </p>
+                </div>
+              </div>
+
+              <!-- ROW ROW  -->
+              <div class="row mb-2">
+
+                <!-- SELECT DEFAULT CATEGORY  -->
+                <div class="col">
+                  <h2 class="display-5">
+                    <span> Największa darmowa baza </span>
+                    <span class="badge bg-warning text-dark"> [[all_questions_count]] </span>
+                    <span> wszystkich pytań testowych na prawo jazdy wszystkich kategorii !!! </span>
+                  </h2>
+                  <h3>
+                    <span> Dostępne kategorie to: </span>
+                    <strong class="small"> [[all_categories]] </strong>
+                  </h3>
+                  <p>
+                    <strong> Kliknij poniżej i wybierz aktualną kategorię z testów na prawo jazdy której chcesz się teraz uczyć: </strong>
+                  </p>
+                  <div m-loop="[[all_categories]]" class="text-center">
+                    <button data-bs-toggle="modal" data-bs-target="#change-category-modal" @click="changeSelectedCategory('xxx')" class="btn btn-outline-secondary p-1 me-1 mb-1" :class="{'michal-btn-primary': isSelectedCategory('xxx')}" type="button">
+                      <strong> XXX </strong>
+                      <br>
+                      <span class="small"> [[xxx_questions_count]] - pytań</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- ROW ROW  -->
+                <div class="row mb-2">
+                  <div class="col">
+                    <p>
+                      <span>Pamiętaj, że konkretne pytanie testowe</span>
+                      <strong> może należeć do wielu różnych kategorii prawa jazdy! </strong>
+                    </p>
+                    <p>Przykładowo pytanie o pierwszeństwo przejazdu jest pytaniem pasującym do wszystkich kategorii prawa jazdy.</p>
+                  </div>
+                </div>
+
+                <!-- ROW ROW BLOG -->
+                <div class="row mb-2">
+                  <div class="col">
+                    <h2>Blog i artykuły ze świata nauki jazdy!</h2>
+                    <ol m-loop="0,1,2,3,4,5,6,7,8,9" class="text-start">
+                      <li m-if="post_xxx_slug" class="mb-2">
+                        <a href="[[post_xxx_slug]]">[[post_xxx_title]]
+                        </a>
+                      </li>
+                    </ol>
+                  </div>
+                </div>
+
+                <!-- ROW ROW INNE PYTANIA TESTOWE -->
+                <div class="row mb-2 text-start">
+                  <div class="col">
+                    <h2>Przykładowe pytania z testów na prawo jazdy {{year}}</h2>
+                    <p>Już niedługo tutaj je dodam :)</p>
+
+                    <!-- <ol m-loop="100,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500" class="text-start list-unstyled">
+                      <li m-if="question_slug_xxx" class="mb-2"> Pytanie [[question_nr_xxx]].
+                        <a :href="question_slug_xxx" href="[[question_slug_xxx]]"> [[question_title_xxx]]
+                        </a>
+                      </li>
+                    </ol> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- RIGHT SIDEBAR  -->
+            <div class="col-12 col-lg-6"> [[right_sidebar]] </div>
+
+            <!-- END ROW  -->
+          </div>
+
+          <!-- END CONTAINER  -->
+        </div>
+      </main>
+
+      <!-- FOOTER  --> [[footer]]
+
+      <!-- MAKE SURE ALL HTML CONTENT IS INSIDE div#app TO SUPPORT VUEJS  -->
+    </div>
+  </body>
+</html>

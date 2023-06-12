@@ -1,0 +1,84 @@
+{
+  "pages": [
+    {
+      "slug": "szkolenia",
+      "linkName": "szkolenia",
+      "template": "courseTemplate",
+      "content": {
+        "beforeHeadline": "",
+        "headline": "Szkolenia wideo od Michała",
+        "lead": "Przygotowałem dla Ciebie kilka szkoleń nagranych na wideo, które pomogą Ci zdać egzamin praktyczny na prawo jazdy!",
+        "paragraph": "Oglądaj filmy, na pewno znajdziesz w nich coś dla siebie."
+      },
+      "subPages": [
+        {
+          "slug": "kompendium-wiedzy",
+          "linkName": "kompendium wiedzy",
+          "template": "courseTemplate",
+          "content": {
+            "beforeHeadline": "Nowe szkolenie wideo!",
+            "headline": "Kompendium wiedzy - czyli wszystko co musisz wiedzieć przed egzaminemna prawo jazdy",
+            "lead": "Zobacz co musisz wiedzieć przed egzaminem państwowym na prawo jazdy aby zdać go za pierwszym razem.",
+            "paragraph": "",
+            "author": "Michał Trąbski",
+            "authorTitle": "instruktor nauki jazdy",
+            "courseName": "Kompendium wiedzy - czyli wszystko co musisz wiedzieć przed egzaminemna prawo jazdy",
+            "price": "47",
+            "dotPayLink": "https://ssl.dotpay.pl/t2/?chk=e8db9dadb47b1cff1bd415802643319b6e5a72a1540a75ddf64434c2a47b0aa9&pid=jqbhda9k0j1z9xrux86llhic3l3i88po",
+            "accessDuration": "dostęp bezterminowy",
+            "offer": [
+              "<h2 class=\"text-center\">Oglądaj wideo<h2>",
+              { "ytId": "C_Nx6dpeC6U" }
+            ]
+          }
+        },
+        {
+          "slug": "sytuacje-i-niespodzianki-na-drodze",
+          "linkName": "sytuacje i niespodzianki na drodze",
+          "template": "courseTemplate",
+          "content": {
+            "beforeHeadline": "Nowe szkolenie wideo!",
+            "headline": "Poznaj wszystkie Sytuacje i niespodzianki na drodze, przez które najczęściej oblewa się egzamin Państwowy!",
+            "lead": "Zobacz jak się zachować w sytuacjach nietypowych by uchronić się przed podpuszczaniem gzaminatora i zdać egzamin za pierwszym razem.",
+            "paragraph": "",
+            "author": "Michał Trąbski",
+            "authorTitle": "instruktor nauki jazdy",
+            "courseName": "Sytuacje i Niespodzianki na drodze, przez które najczęściej oblewa się egzamin Państwowy!",
+            "price": "47",
+            "dotPayLink": "https://ssl.dotpay.pl/t2/?chk=622a90a948dff32862a8e3ef72a871b4552e2e138903eab605bfb9a01fb2de46&pid=3mwb5b79u5fn0zkiilw7kon25s28or63",
+            "accessDuration": "dostęp bezterminowy",
+            "offer": [
+              "Witaj. Zobacz poniższe nagranie, w którym opowiem ci o sytuacjach i niespodziankach na drodze, które na 90% wydarzą się na Twoim egzaminie. Z tego filmu dowiesz się jak w takich sytuacjach się zachować! Bez poznania tego materiału łatwo egzaminator sprawi, że oblejesz! Ale to nie wszystko! Upewnij się czy potrafisz zachować się, w tych wszystkich sytuacjach, które prezentuję w poniższych nagraniach:",
+              "<h2 class=\"text-center\">Oglądaj wideo<h2>",
+              { "ytId": "0M8MK5GKHVE" },
+              "To pierwsze nagranie jest przedstawieniem wszystkich zagadnień, które omówiłem w pierwotnej wersji szkolenia sytuacje i niespodzianki na drodze. Do kolejnej wersji dodaję sporo uzupełnień! Te uzupełnienia to np. film, który jest kontynuacją pułapek egzaminacyjnych! Zapoznaj się z poniższymi nagraniami by zobaczyć czy znasz i potrafisz zachować się w tych sytuacjach i pułapkach, które omówię w pełnej wersji szkolenia sytuacje i niespodzianki na drodze!",
+              "<h2 class=\"text-center\">Co to w ogóle za szkolenie?<h2>",
+              "Pracując z kursantami w elce wynotowałem sobie mnóstwo różnych sytuacji w, których podczas szkolenia (lub egzaminu) znaleźli się moi kursanci (i kursanci kolegów instruktorów). Te sytuacje notowałem sobie przez ponad pół roku w notatniku i na ich podstawie przygotowałem, kompletny zestaw sytuacji i niespodzianek i pułapek, które spotkasz na egzaminie Państwowym na prawo jazdy! W tym szkoleniu dostajesz ode mnie gotową ściągę. Co ważne, Twój instruktor (ja wierzę, że jest bardzo kompetentny!) tylko, że mógł o czymś po prostu zapomnieć ci powiedzieć, lub jakaś sytuacja nie przytrafiła Ci się na szkleniu a może przytrafić Ci się podczas egzaminu. Gdy już poznasz te obszerne materiały ze szkolenia (ponad 2h 9min 57sek treści) będę spokojny, że na egzaminie przebrniesz przez wszystkie trudne sytuacje bez problemu ponieważ Cię do nich przygotuję!",
+              "Ponadto w tym kursie internetowym (w postaci filmów) stworzyłem właściwie na zamówienie moich kursantów omówienia wielu ciekawych pytań z nauki jazdy. Kiedy zakładałem bloga z poradami o nauce Jazdy (poznajTESTY.blogspot.com) oraz portal do nauki testów na prawo Jazdy (poznajTesty.pl) nie wiedziałem, że spotka się on z tak dużym zainteresowaniem – już ponad 70 000 kursantów odwiedziło moje strony! Kursanci zadając mi pytania w emailach, w komentarzach do postów na blogu, czy też przez funkcję zadawania pytań do pytań testowych wypytali mnie o mnóstwo tematów, na które odpowiedzi znajdują się właśnie w szkoleniu Sytuacje i Niespodzianki na drodze 2.0",
+              "W tym szkoleniu znajdziesz również informacje, dosłownie jak zachować się w konkretnych sytuacjach i niespodziankach na drodze – które spotkają Ciebie na egzaminie państwowym na prawo Jazdy! Dzięki temu łatwo zdasz egzamin za pierwszym razem.",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
