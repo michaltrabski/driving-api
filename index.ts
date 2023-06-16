@@ -5,14 +5,16 @@ require("dotenv").config();
 import { createQuestionsData, ExcelFileInfo, getQuestionsFromExcel } from "./app/createQuestionsData";
 import { resizeMedia } from "./app/createQuestionsMedia";
 import { unzip } from "./app/unzip";
-import { getEnv, getLimit, isProduction, removeTransformedMedia    } from "./app/utils";
+import { getPhpCode } from "./app/utils";
  
+ 
+// https://dacmwwxjyw.cfolks.pl/files/testy-na-prawo-jazdy/size-720/1_1472ztV.mp4
+
 
 const start = async () => {
   console.log("--------------------------START--------------------------");
   console.log("ENV", {
     NODE_ENV: process.env.NODE_ENV,
-    // limit: getLimit(),
   });
 
   try {
@@ -25,10 +27,35 @@ const start = async () => {
  
 
     // TAKS - process excel files to create allQuestionsData
-    const { allQuestionsData, allQuestionsDataSlim } = createQuestionsData(getExcels());
+    const { allQuestions, allCategories, allPostsFromOldWordpress  } = createQuestionsData(getExcels());
 
-    // fs.outputJsonSync("results/allQuestionsData.json", allQuestionsData);
-    // fs.outputJsonSync("results/allQuestionsDataSlim.json", allQuestionsDataSlim);
+    console.log(1, "allQuestions", allQuestions.slice(0, 1));
+    console.log(2, "allCategories", allCategories);
+    console.log(3, "allPostsFromOldWordpress", allPostsFromOldWordpress.slice(0, 1));
+
+    let fileName = "all-questions";
+    fs.outputJsonSync(`php/api/${fileName}.json`, { allCategories, allQuestions});
+    fs.outputFileSync(`php/api/${fileName}.php`, getPhpCode(fileName));
+
+    fileName = "all-questions-300";
+    fs.outputJsonSync(`php/api/${fileName}.json`, { allCategories, allQuestions: allQuestions.slice(0, 300)});
+    fs.outputFileSync(`php/api/${fileName}.php`, getPhpCode(fileName));   
+
+
+    fileName = "all-categories";
+    fs.outputJsonSync(`php/api/${fileName}.json`, {allCategories});
+    fs.outputFileSync(`php/api/${fileName}.php`, getPhpCode(fileName));   
+
+
+    // fileName = "all-posts-from-old-wordpress";
+    // fs.outputJsonSync(`php/api/${fileName}.json`, {allPostsFromOldWordpress});
+    // fs.outputFileSync(`php/api/${fileName}.php`, getPhpCode(fileName));   
+
+    fileName = "all-posts-from-old-wordpress-50";
+    fs.outputJsonSync(`php/api/${fileName}.json`, {allPostsFromOldWordpress50: allPostsFromOldWordpress.slice(0, 50)});
+    fs.outputFileSync(`php/api/${fileName}.php`, getPhpCode(fileName));   
+
+
   } catch (err) {
     console.log("FAIL BECAUSE OF CATCH ERROR", err);
     // start();

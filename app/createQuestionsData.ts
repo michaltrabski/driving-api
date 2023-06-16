@@ -1,6 +1,5 @@
 const fs = require("fs-extra");
 import _ from "lodash";
- 
 
 import { convertExcelToJson } from "./excelToJson";
 import {
@@ -12,17 +11,8 @@ import {
   Question,
   QuestionSlim,
 } from "./types";
-import {
-  imageNameToPngDEPREC2,
-  isVideo,
-  normalizeMediaNameDEPRECATED,
-  randomizeMediaName,
-  videoNameToMp4DEPRECATED2,
-  videoNameToMp4DEPRECATED,
-  getEnv,
-  getLimit,
-  mediaNameWithoutExtention,
-} from "./utils";
+import { convertMediaNameToPngOrMp4, textToSlug } from "./utils";
+ 
 
 const EXCEL_SHEET_NAME = "Treść pytania";
 
@@ -67,29 +57,19 @@ const requiredFields = [
 
 export const createQuestionsData = (
   excels: ExcelFileInfo[]
-): { allQuestionsData: AllQuestionsData; allQuestionsDataSlim: AllQuestionsDataSlim } => {
+): { allQuestions: any; allCategories: any; allPostsFromOldWordpress: any } => {
   const newestExcel = excels.find((excel) => excel.isNewest) || excels[0];
 
-  const olderExcels = excels.filter((excel) => !excel.isNewest);
-  // TODO : add old notactive questions to newestExcel just fot history and seo
+  const { allQuestionsData } = getQuestionsFromExcel(newestExcel);
 
-  const { allQuestionsData, allQuestionsDataSlim } = getQuestionsFromExcel(newestExcel);
-
-  const allQuestionsDataSliced = {
-    allQuestions: allQuestionsData.allQuestions.slice(0, getLimit()),
-    allCategories: allQuestionsData.allCategories.slice(0, getLimit()),
-    postsFromOldWordpress: allQuestionsData.postsFromOldWordpress.slice(0, getLimit()),
+  return {
+    allQuestions: allQuestionsData.allQuestions,
+    allCategories: allQuestionsData.allCategories,
+    allPostsFromOldWordpress: allQuestionsData.allPostsFromOldWordpress,
   };
-  const allQuestionsDataSlimSliced = {
-    allQuestionsSlim: allQuestionsDataSlim.allQuestionsSlim.slice(0, getLimit()),
-  };
-
-  return { allQuestionsData: allQuestionsDataSliced, allQuestionsDataSlim: allQuestionsDataSlimSliced };
 };
 
-export const getQuestionsFromExcel = (
-  excel: ExcelFileInfo
-): { allQuestionsData: AllQuestionsData; allQuestionsDataSlim: AllQuestionsDataSlim } => {
+export const getQuestionsFromExcel = (excel: ExcelFileInfo): { allQuestionsData: AllQuestionsData } => {
   const excelFile = convertExcelToJson(excel.excelSource);
   const isNewest = excel.isNewest;
 
@@ -114,71 +94,41 @@ export const getQuestionsFromExcel = (
   // TASK 3
   const masterQuestions = fs.readJsonSync("sourceData/masterQuestions.json");
 
-  // console.log(
-  //   "masterQuestions.allQuestions.length ===",
-  //   masterQuestions.allQuestions.length,
-  //   masterQuestions.allQuestions[0]
-  // );
-
- 
- 
   // TASK 4
   const allQuestions = excelQuestions.map((excelQuestion) => {
     const categories: Category[] = excelQuestion[KATEGORIE].toLowerCase().split(",") as Category[];
     categories.forEach((cat) => allCategoriesSet.add(cat));
 
+    const text = excelQuestion[PYTANIE]
     const id = `id${excelQuestion[NUMER_PYTANIA]}`;
-    const m = excelQuestion[MEDIA] || "";
+    const m = convertMediaNameToPngOrMp4(excelQuestion[MEDIA]) || "";
 
     const newQuestion: Question = {
       id,
-      text: excelQuestion[PYTANIE],
-      media: mediaNameWithoutExtention(m),
-      is_video: isVideo(m),
+      text,
+      slug:textToSlug(text, id),
+      media: m,
       a: excelQuestion[ODPOWIEDZ_A],
       b: excelQuestion[ODPOWIEDZ_B],
       c: excelQuestion[ODPOWIEDZ_C],
-      t: "tak",
-      n: "nie",
-      correct_answer: excelQuestion[POPRAWNA_ODP].toLowerCase() as CorrectAnswer,
-      question_belongs_to_categories: categories,
+      r: excelQuestion[POPRAWNA_ODP].toLowerCase(),
+      categories: categories,
       score: +excelQuestion[SCORE],
-      is_active: isNewest,
-      topic_id: masterQuestions.allQuestions.find((q: any) => q.id === id)?.topicId || "",
-      expl: masterQuestions.allQuestions.find((q: any) => q.id === id)?.expl || [],
-      author: masterQuestions.allQuestions.find((q: any) => q.id === id)?.author || "",
-      low_name_old: masterQuestions.allQuestions.find((q: any) => q.id === id)?.lowNameOld || "",
-      low_name: masterQuestions.allQuestions.find((q: any) => q.id === id)?.lowName || "",
-      low: masterQuestions.allQuestions.find((q: any) => q.id === id)?.low || [],
-      low_names: masterQuestions.allQuestions.find((q: any) => q.id === id)?.lowNames || [],
+      // topic_id: masterQuestions.allQuestions.find((q: any) => q.id === id)?.topicId || "",
+      // expl: masterQuestions.allQuestions.find((q: any) => q.id === id)?.expl || [],
+      // author: masterQuestions.allQuestions.find((q: any) => q.id === id)?.author || "",
+      // low_name_old: masterQuestions.allQuestions.find((q: any) => q.id === id)?.lowNameOld || "",
+      // low_name: masterQuestions.allQuestions.find((q: any) => q.id === id)?.lowName || "",
+      // low: masterQuestions.allQuestions.find((q: any) => q.id === id)?.low || [],
+      // low_names: masterQuestions.allQuestions.find((q: any) => q.id === id)?.lowNames || [],
     };
     return newQuestion;
-  });
-
-  const allQuestionsSlim = allQuestions.map((q) => {
-    const questionSlim: QuestionSlim = {
-      id: q.id,
-      t: q.text,
-      m: `${q.media}${q.is_video ? ".mp4" : ".jpg"}`, 
-      right: q.correct_answer,
-      cats: q.question_belongs_to_categories,
-      s: q.score,
-    };
-
-    if (q.a) {
-      questionSlim.a = q.a;
-      questionSlim.b = q.b;
-      questionSlim.c = q.c;
-    }
-
-    return questionSlim;
   });
 
   // TASK 5
   const postsFromOldWordpress: PostFromOldWordpress[] = fs.readJsonSync(
     "sourceData/postsFromOldWordpress.json"
   ).postsFromOldWordpress;
-  // console.log("CREATA POSTSFROMOLDWORDPRESS", "postsFromOldWordpress[0] ===", postsFromOldWordpress[0]);
 
   // TASK 6 order posts
   const orderedPostsFromOldWordpress = [..._.sortBy(postsFromOldWordpress, ["date"])].reverse();
@@ -186,21 +136,9 @@ export const getQuestionsFromExcel = (
   const allQuestionsData: AllQuestionsData = {
     allQuestions,
     allCategories: _.sortBy([...allCategoriesSet] as Category[]),
-    postsFromOldWordpress: orderedPostsFromOldWordpress,
+    allPostsFromOldWordpress: orderedPostsFromOldWordpress,
   };
 
-  const allQuestionsDataSlim: AllQuestionsDataSlim = {
-    allQuestionsSlim,
-  };
-
-  // console.log("ALL QUESTIONS DATA" );
-  // console.log( "allQuestionsData.allQuestions[0] ===",allQuestionsData.allQuestions[0]);
-  // console.log( "allQuestionsData.allQuestions.length ===",allQuestionsData.allQuestions.length);
-
-  console.log(
-    `ALL QUESTIONS DATA CREATED`,
-    `---allQuestionsData.allQuestions.length===${allQuestionsData.allQuestions.length}`
-  );
-
-  return { allQuestionsData, allQuestionsDataSlim };
+ 
+  return { allQuestionsData };
 };

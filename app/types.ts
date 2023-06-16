@@ -7,7 +7,7 @@ export enum MODE {
 export interface AllQuestionsData {
   allQuestions: Question[];
   allCategories: Category[];
-  postsFromOldWordpress: PostFromOldWordpress[];
+  allPostsFromOldWordpress: PostFromOldWordpress[];
 }
 
 export interface AllQuestionsDataSlim {
@@ -17,24 +17,21 @@ export interface AllQuestionsDataSlim {
 export interface Question {
   id: string;
   text: string;
+  slug: string;
   media: string;
   a: string;
   b: string;
   c: string;
-  t: string;
-  n: string;
-  correct_answer: CorrectAnswer;
-  question_belongs_to_categories: Category[];
+  r: string;
+  categories: string[];
   score: number;
-  is_active: boolean;
-  is_video: boolean;
-  topic_id: string;
-  expl: any[];
-  author: string;
-  low_name_old: string;
-  low_name: string;
-  low: any[];
-  low_names: any[];
+  topic_id?: string;
+  expl?: any[];
+  author?: string;
+  low_name_old?: string;
+  low_name?: string;
+  low?: any[];
+  low_names?: any[];
 }
 
 export interface QuestionSlim {
