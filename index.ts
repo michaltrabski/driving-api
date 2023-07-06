@@ -27,33 +27,42 @@ const start = async () => {
  
 
     // TAKS - process excel files to create allQuestionsData
-    const { allQuestions, allCategories, allPostsFromOldWordpress  } = createQuestionsData(getExcels());
+    const { allQuestions, allCategories, allPostsFromOldWordpress ,allExplanations } = createQuestionsData(getExcels());
 
-    console.log(1, "allQuestions", allQuestions.slice(0, 1));
-    console.log(2, "allCategories", allCategories);
-    console.log(3, "allPostsFromOldWordpress", allPostsFromOldWordpress.slice(0, 1));
+    // console.log(1, "allQuestions", allQuestions.slice(0, 1));
+    // console.log(2, "allCategories", allCategories);
+    // console.log(3, "allPostsFromOldWordpress", allPostsFromOldWordpress.slice(0, 1));
+    // console.log(4, "allExplanations", allExplanations.slice(0, 1));
+
+    // remove folder sync
+    fs.removeSync("php/api");
 
     let fileName = "all-questions";
-    fs.outputJsonSync(`php/api/${fileName}.json`, { allCategories, allQuestions});
+    fs.outputJsonSync(`php/api/${fileName}.json`, {count: allQuestions.length, allCategories, allQuestions});
     fs.outputFileSync(`php/api/${fileName}.php`, getPhpCode(fileName));
 
     fileName = "all-questions-300";
-    fs.outputJsonSync(`php/api/${fileName}.json`, { allCategories, allQuestions: allQuestions.slice(0, 300)});
+    fs.outputJsonSync(`php/api/${fileName}.json`, { count: allQuestions.slice(0, 300).length,allCategories, allQuestions: allQuestions.slice(0, 300)});
     fs.outputFileSync(`php/api/${fileName}.php`, getPhpCode(fileName));   
 
 
     fileName = "all-categories";
-    fs.outputJsonSync(`php/api/${fileName}.json`, {allCategories});
+    fs.outputJsonSync(`php/api/${fileName}.json`, { count: allCategories.length, allCategories});
     fs.outputFileSync(`php/api/${fileName}.php`, getPhpCode(fileName));   
 
 
-    // fileName = "all-posts-from-old-wordpress";
-    // fs.outputJsonSync(`php/api/${fileName}.json`, {allPostsFromOldWordpress});
-    // fs.outputFileSync(`php/api/${fileName}.php`, getPhpCode(fileName));   
+    // TODO - remove duplicates and questions that are created form allQuestions 
+    fileName = "all-posts-from-old-wordpress";
+    fs.outputJsonSync(`php/api/${fileName}.json`, { count: allPostsFromOldWordpress.length,allPostsFromOldWordpress});
+    fs.outputFileSync(`php/api/${fileName}.php`, getPhpCode(fileName));   
 
     fileName = "all-posts-from-old-wordpress-50";
-    fs.outputJsonSync(`php/api/${fileName}.json`, {allPostsFromOldWordpress50: allPostsFromOldWordpress.slice(0, 50)});
-    fs.outputFileSync(`php/api/${fileName}.php`, getPhpCode(fileName));   
+    fs.outputJsonSync(`php/api/${fileName}.json`, {count: allPostsFromOldWordpress.slice(0, 50).length,allPostsFromOldWordpress50: allPostsFromOldWordpress.slice(0, 50)});
+    fs.outputFileSync(`php/api/${fileName}.php`, getPhpCode(fileName));  
+    
+    fileName = "all-explanations";
+    fs.outputJsonSync(`php/api/${fileName}.json`, {count: allExplanations.length, allExplanations});
+    fs.outputFileSync(`php/api/${fileName}.php`, getPhpCode(fileName));
 
 
   } catch (err) {

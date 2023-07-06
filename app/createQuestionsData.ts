@@ -2,17 +2,8 @@ const fs = require("fs-extra");
 import _ from "lodash";
 
 import { convertExcelToJson } from "./excelToJson";
-import {
-  AllQuestionsData,
-  AllQuestionsDataSlim,
-  Category,
-  CorrectAnswer,
-  PostFromOldWordpress,
-  Question,
-  QuestionSlim,
-} from "./types";
+import { AllQuestionsData, Category, Explanation, PostFromOldWordpress, Question } from "./types";
 import { convertMediaNameToPngOrMp4, textToSlug } from "./utils";
- 
 
 const EXCEL_SHEET_NAME = "Treść pytania";
 
@@ -57,21 +48,17 @@ const requiredFields = [
 
 export const createQuestionsData = (
   excels: ExcelFileInfo[]
-): { allQuestions: any; allCategories: any; allPostsFromOldWordpress: any } => {
+): AllQuestionsData => {
   const newestExcel = excels.find((excel) => excel.isNewest) || excels[0];
 
-  const { allQuestionsData } = getQuestionsFromExcel(newestExcel);
+  const allQuestionsData = getQuestionsFromExcel(newestExcel);
 
-  return {
-    allQuestions: allQuestionsData.allQuestions,
-    allCategories: allQuestionsData.allCategories,
-    allPostsFromOldWordpress: allQuestionsData.allPostsFromOldWordpress,
-  };
+  return allQuestionsData;
 };
 
-export const getQuestionsFromExcel = (excel: ExcelFileInfo): { allQuestionsData: AllQuestionsData } => {
+export const getQuestionsFromExcel = (excel: ExcelFileInfo): AllQuestionsData => {
   const excelFile = convertExcelToJson(excel.excelSource);
-  const isNewest = excel.isNewest;
+ 
 
   // TASK 1
   const excelQuestions = excelFile[EXCEL_SHEET_NAME] as QuestionFromExcel[];
@@ -82,31 +69,45 @@ export const getQuestionsFromExcel = (excel: ExcelFileInfo): { allQuestionsData:
   requiredFields.forEach((field) => {
     if (!Object.keys(excelQuestions[0]).includes(field)) missingFields.push(field);
   });
-  // console.log("CHECK IF QUESTIONS CONTAINS REQUIRED FIELDS", "requiredFields ===", requiredFields);
-  // console.log("CHECK IF QUESTIONS CONTAINS MISSING FIELDS" ,"missingFields ===", missingFields);
-
+ 
   if (missingFields.length > 0) {
     throw new Error(`Missing fields === ${missingFields.join(", ")}`);
   }
 
   const allCategoriesSet = new Set<string>();
 
-  // TASK 3
+  // TASK 3 - create allExplanations
   const masterQuestions = fs.readJsonSync("sourceData/masterQuestions.json");
+  const allExplanations = masterQuestions.allQuestions.map((q: any) => {
+ 
+    const newExplanation: Explanation = {
+      id: q.id  ,
+      expl: q.expl,
+      topicId: q.topicId,
+      author: q.author,
+      lowNameOld: q.lowNameOld,
+      lowName: q.lowName,
+      low: q.low,
+      lowNames: q.lowNames 
+    };
+
+    return newExplanation;
+  });
+ 
 
   // TASK 4
   const allQuestions = excelQuestions.map((excelQuestion) => {
     const categories: Category[] = excelQuestion[KATEGORIE].toLowerCase().split(",") as Category[];
     categories.forEach((cat) => allCategoriesSet.add(cat));
 
-    const text = excelQuestion[PYTANIE]
+    const text = excelQuestion[PYTANIE];
     const id = `id${excelQuestion[NUMER_PYTANIA]}`;
     const m = convertMediaNameToPngOrMp4(excelQuestion[MEDIA]) || "";
 
     const newQuestion: Question = {
       id,
       text,
-      slug:textToSlug(text, id),
+      slug: textToSlug(text, id),
       media: m,
       a: excelQuestion[ODPOWIEDZ_A],
       b: excelQuestion[ODPOWIEDZ_B],
@@ -114,13 +115,6 @@ export const getQuestionsFromExcel = (excel: ExcelFileInfo): { allQuestionsData:
       r: excelQuestion[POPRAWNA_ODP].toLowerCase(),
       categories: categories,
       score: +excelQuestion[SCORE],
-      // topic_id: masterQuestions.allQuestions.find((q: any) => q.id === id)?.topicId || "",
-      // expl: masterQuestions.allQuestions.find((q: any) => q.id === id)?.expl || [],
-      // author: masterQuestions.allQuestions.find((q: any) => q.id === id)?.author || "",
-      // low_name_old: masterQuestions.allQuestions.find((q: any) => q.id === id)?.lowNameOld || "",
-      // low_name: masterQuestions.allQuestions.find((q: any) => q.id === id)?.lowName || "",
-      // low: masterQuestions.allQuestions.find((q: any) => q.id === id)?.low || [],
-      // low_names: masterQuestions.allQuestions.find((q: any) => q.id === id)?.lowNames || [],
     };
     return newQuestion;
   });
@@ -137,8 +131,8 @@ export const getQuestionsFromExcel = (excel: ExcelFileInfo): { allQuestionsData:
     allQuestions,
     allCategories: _.sortBy([...allCategoriesSet] as Category[]),
     allPostsFromOldWordpress: orderedPostsFromOldWordpress,
+    allExplanations
   };
 
- 
-  return { allQuestionsData };
+  return allQuestionsData;
 };

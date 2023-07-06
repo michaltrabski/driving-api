@@ -8,6 +8,7 @@ export interface AllQuestionsData {
   allQuestions: Question[];
   allCategories: Category[];
   allPostsFromOldWordpress: PostFromOldWordpress[];
+  allExplanations: Explanation[];
 }
 
 export interface AllQuestionsDataSlim {
@@ -25,13 +26,17 @@ export interface Question {
   r: string;
   categories: string[];
   score: number;
-  topic_id?: string;
-  expl?: any[];
-  author?: string;
-  low_name_old?: string;
-  low_name?: string;
-  low?: any[];
-  low_names?: any[];
+}
+
+export interface Explanation {
+  id: string;
+  expl: string[];
+  topicId: string,
+  author: string,
+  lowNameOld: string,
+  lowName: string,
+  low: any[],
+  lowNames: string[]
 }
 
 export interface QuestionSlim {
