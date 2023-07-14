@@ -15,31 +15,28 @@ export function getPhpCode(fileName: string) {
               echo $jsonData;`;
 }
 
-export function textToSlug(...args: string[]) {
-  let str = args.join("-");
+export function textToSlug(text: string, id: string) {
+  let slug = `${text}-id-pytania-${id.replace("id", "")}`;
 
-  str = str.replace(/^\s+|\s+$/g, ""); // trim
-  str = str.toLowerCase();
+  slug = slug.replace(/^\s+|\s+$/g, ""); // trim
+  slug = slug.toLowerCase();
 
   // remove accents, swap ñ for n, etc
   var from = "ęóąśłżźćńàáäâèéëêìíïîòóöôùúüûñç·/_,:;";
   var to__ = "eoaslzzcnaaaaeeeeiiiioooouuuunc------";
   for (var i = 0, l = from.length; i < l; i++) {
-    str = str.replace(new RegExp(from.charAt(i), "g"), to__.charAt(i));
+    slug = slug.replace(new RegExp(from.charAt(i), "g"), to__.charAt(i));
   }
 
-  str = str
+  slug = slug
     .replace(/[^a-z0-9 -]/g, "") // remove invalid chars
     .replace(/\s+/g, "-") // collapse whitespace and replace by -
     .replace(/-+/g, "-"); // collapse dashes
 
-  // replace ending with .html
-  if (!str.endsWith(".html")) {
-    str = str + ".html";
-  }
+  return slug;
+}
 
-  return str;
-};
+ 
 
 export function convertMediaNameToPngOrMp4(mediaName: string) {
   if (mediaName.endsWith(".jpg")) {
@@ -64,8 +61,6 @@ export function convertMediaNameToPngOrMp4(mediaName: string) {
 // export const mediaNameWithoutExtention = (originalMediaName: string) => {
 //   return originalMediaName.split(".").slice(0, -1).join(".");
 // };
-
- 
 
 // interface MediaList {
 //   media_original_file_name: string;
@@ -92,8 +87,6 @@ export function convertMediaNameToPngOrMp4(mediaName: string) {
 //   return process.env[variableName] ?? "";
 // };
 
- 
-
 // export const getLimit = (): number => {
 //   const limitForDev = getEnv("LIMIT_QUESTIONS_FOR_DEVELOPMENT");
 //   const limitForProd = getEnv("LIMIT_QUESTIONS_FOR_PRODUCTION");
@@ -105,5 +98,3 @@ export function convertMediaNameToPngOrMp4(mediaName: string) {
 //   // console.log(process.env.NODE_ENV === MODE.PRODUCTION)
 //   return process.env.NODE_ENV === MODE.PRODUCTION;
 // };
-
-

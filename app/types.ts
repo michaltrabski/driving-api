@@ -4,17 +4,6 @@ export enum MODE {
   PREBUILD = "prebuild",
 }
 
-export interface AllQuestionsData {
-  allQuestions: Question[];
-  allCategories: Category[];
-  allPostsFromOldWordpress: PostFromOldWordpress[];
-  allExplanations: Explanation[];
-}
-
-export interface AllQuestionsDataSlim {
-  allQuestionsSlim: QuestionSlim[];
-}
-
 export interface Question {
   id: string;
   text: string;
@@ -27,6 +16,27 @@ export interface Question {
   categories: string[];
   score: number;
 }
+
+export interface Exam {
+  examName: string;
+  examSlug: string;
+  examCategory: string;
+  examQuestions32: Question[];
+}
+
+export interface AllQuestionsData {
+  allQuestions: Question[];
+  allCategories: Category[];
+  allPostsFromOldWordpress: PostFromOldWordpress[];
+  allExplanations: Explanation[];
+  allExams: Exam[];
+}
+
+export interface AllQuestionsDataSlim {
+  allQuestionsSlim: QuestionSlim[];
+}
+
+
 
 export interface Explanation {
   id: string;

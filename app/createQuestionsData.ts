@@ -1,8 +1,8 @@
 const fs = require("fs-extra");
-import _ from "lodash";
+const _ = require("lodash");
 
 import { convertExcelToJson } from "./excelToJson";
-import { AllQuestionsData, Category, Explanation, PostFromOldWordpress, Question } from "./types";
+import { AllQuestionsData, Category, Exam, Explanation, PostFromOldWordpress, Question } from "./types";
 import { convertMediaNameToPngOrMp4, textToSlug } from "./utils";
 
 const EXCEL_SHEET_NAME = "Treść pytania";
@@ -46,9 +46,7 @@ const requiredFields = [
   SCORE,
 ];
 
-export const createQuestionsData = (
-  excels: ExcelFileInfo[]
-): AllQuestionsData => {
+export const createQuestionsData = (excels: ExcelFileInfo[]): AllQuestionsData => {
   const newestExcel = excels.find((excel) => excel.isNewest) || excels[0];
 
   const allQuestionsData = getQuestionsFromExcel(newestExcel);
@@ -58,7 +56,6 @@ export const createQuestionsData = (
 
 export const getQuestionsFromExcel = (excel: ExcelFileInfo): AllQuestionsData => {
   const excelFile = convertExcelToJson(excel.excelSource);
- 
 
   // TASK 1
   const excelQuestions = excelFile[EXCEL_SHEET_NAME] as QuestionFromExcel[];
@@ -69,7 +66,7 @@ export const getQuestionsFromExcel = (excel: ExcelFileInfo): AllQuestionsData =>
   requiredFields.forEach((field) => {
     if (!Object.keys(excelQuestions[0]).includes(field)) missingFields.push(field);
   });
- 
+
   if (missingFields.length > 0) {
     throw new Error(`Missing fields === ${missingFields.join(", ")}`);
   }
@@ -79,21 +76,19 @@ export const getQuestionsFromExcel = (excel: ExcelFileInfo): AllQuestionsData =>
   // TASK 3 - create allExplanations
   const masterQuestions = fs.readJsonSync("sourceData/masterQuestions.json");
   const allExplanations = masterQuestions.allQuestions.map((q: any) => {
- 
     const newExplanation: Explanation = {
-      id: q.id  ,
+      id: q.id,
       expl: q.expl,
       topicId: q.topicId,
       author: q.author,
       lowNameOld: q.lowNameOld,
       lowName: q.lowName,
       low: q.low,
-      lowNames: q.lowNames 
+      lowNames: q.lowNames,
     };
 
     return newExplanation;
   });
- 
 
   // TASK 4
   const allQuestions = excelQuestions.map((excelQuestion) => {
@@ -127,11 +122,34 @@ export const getQuestionsFromExcel = (excel: ExcelFileInfo): AllQuestionsData =>
   // TASK 6 order posts
   const orderedPostsFromOldWordpress = [..._.sortBy(postsFromOldWordpress, ["date"])].reverse();
 
+  const examExample: Exam = {
+    examName: "",
+    examSlug: "",
+    examCategory: "b",
+    examQuestions32: allQuestions.slice(0, 32),
+  };
+
+  const arra20 = Array.from(Array(20).keys()).map((i) => i + 1);
+  const allExams: Exam[] = arra20.map((i) => {
+    const allQuestionsShuffled = allQuestions.sort(() => Math.random() - 0.5);
+
+    return {
+      ...examExample,
+      examName: `Egzamin nr ${i}`,
+      examSlug: `egzamin-nr-${i}`,
+      examCategory: "b",
+      examQuestions32: allQuestionsShuffled.slice(0, 32),
+    };
+  });
+
+  const allQuestionsShuffled = allQuestions.sort(() => Math.random() - 0.5);
+
   const allQuestionsData: AllQuestionsData = {
-    allQuestions,
+    allQuestions: allQuestionsShuffled,
     allCategories: _.sortBy([...allCategoriesSet] as Category[]),
     allPostsFromOldWordpress: orderedPostsFromOldWordpress,
-    allExplanations
+    allExplanations,
+    allExams,
   };
 
   return allQuestionsData;
