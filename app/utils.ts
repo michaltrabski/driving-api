@@ -16,7 +16,7 @@ export function getPhpCode(fileName: string) {
 }
 
 export function textToSlug(text: string, id: string) {
-  let slug = `${text}-id-pytania-${id.replace("id", "")}`;
+  let slug = `${text.slice(0,160)}-id-pytania-${id.replace("id", "")}`;
 
   slug = slug.replace(/^\s+|\s+$/g, ""); // trim
   slug = slug.toLowerCase();

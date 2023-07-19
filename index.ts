@@ -37,8 +37,7 @@ const start = async () => {
     // remove folder sync
     fs.removeSync("php/api");
 
- 
-    const fileNameAllQuestions ="all-questions";
+    const fileNameAllQuestions = "all-questions";
     const fileNameAllQuestionsObj = {
       allQuestionsCount: allQuestions.length,
       allCategoriesCount: allCategories.length,
@@ -47,31 +46,48 @@ const start = async () => {
     };
     fs.outputJsonSync(`php/api/${fileNameAllQuestions}.json`, fileNameAllQuestionsObj);
     fs.outputFileSync(`php/api/${fileNameAllQuestions}.php`, getPhpCode(fileNameAllQuestions));
- 
+
     // TODO - remove duplicates and questions that are created form allQuestions
     const fileNameWordpress = "all-posts-from-old-wordpress";
     const fileNameWordpressObj = {
       allPostsFromOldWordpressCount: allPostsFromOldWordpress.length,
-      allPostsFromOldWordpress
+      allPostsFromOldWordpress,
     };
     fs.outputJsonSync(`php/api/${fileNameWordpress}.json`, fileNameWordpressObj);
     fs.outputFileSync(`php/api/${fileNameWordpress}.php`, getPhpCode(fileNameWordpress));
 
- 
- 
-    const fileNameAllExplanations  = "all-explanations";
-    const fileNameAllExplanationsObj = {
-      allExplanationsCount: allExplanations.length,
-      allExplanations
-    };
-    fs.outputJsonSync(`php/api/${fileNameAllExplanations}.json`, fileNameAllExplanations);
-    fs.outputFileSync(`php/api/${fileNameAllExplanations}.php`, getPhpCode(fileNameAllExplanations));
+    {
+      const fileName = "all-explanations";
+      const data = {
+        allExplanationsCount: allExplanations.length,
+        allExplanations,
+      };
+      fs.outputJsonSync(`php/api/${fileName}.json`, data);
+      fs.outputFileSync(`php/api/${fileName}.php`, getPhpCode(fileName));
+      [1,2,3].forEach((name, index, arr) => {
+        const fileName = `all-explanations-${name}`;
+        const sliceBy = Math.ceil(allExplanations.length / arr.length);
 
- 
+        const sliceFrom = sliceBy * index;
+        const sliceTo = index === arr.length -1 ? allExplanations.length : sliceBy + sliceBy * index;
+
+        console.log(name,"sliceFrom", sliceFrom )
+        console.log(name,"sliceTo", sliceTo )
+
+        const allExplanationsSliced = allExplanations.slice(index === 0 ? 0 : sliceFrom, sliceTo);
+        const data = {
+          allExplanationsCount: allExplanationsSliced.length,
+          allExplanations: allExplanationsSliced,
+        };
+        fs.outputJsonSync(`php/api/${fileName}.json`, data);
+        fs.outputFileSync(`php/api/${fileName}.php`, getPhpCode(fileName));
+      });
+    }
+
     const fileNameAllExams = "all-exams";
     const fileNameAllExamsObj = {
       allExamsCount: allExams.length,
-      allExams
+      allExams,
     };
     fs.outputJsonSync(`php/api/${fileNameAllExams}.json`, fileNameAllExamsObj);
     fs.outputFileSync(`php/api/${fileNameAllExams}.php`, getPhpCode(fileNameAllExams));

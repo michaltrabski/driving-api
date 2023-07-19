@@ -91,6 +91,8 @@ export const getQuestionsFromExcel = (excel: ExcelFileInfo): AllQuestionsData =>
   });
 
   // TASK 4
+  const slughLenghtSet = new Set<number>();
+
   const allQuestions = excelQuestions.map((excelQuestion) => {
     const categories: Category[] = excelQuestion[KATEGORIE].toLowerCase().split(",") as Category[];
     categories.forEach((cat) => allCategoriesSet.add(cat));
@@ -98,6 +100,8 @@ export const getQuestionsFromExcel = (excel: ExcelFileInfo): AllQuestionsData =>
     const text = excelQuestion[PYTANIE];
     const id = `id${excelQuestion[NUMER_PYTANIA]}`;
     const m = convertMediaNameToPngOrMp4(excelQuestion[MEDIA]) || "";
+
+    slughLenghtSet.add(textToSlug(text, id).length);
 
     const newQuestion: Question = {
       id,
@@ -114,6 +118,9 @@ export const getQuestionsFromExcel = (excel: ExcelFileInfo): AllQuestionsData =>
     return newQuestion;
   });
 
+  console.log("slug to generate page can not be more that aprox 180 characters");
+  console.log("slughLenghtSet ===", [...slughLenghtSet].sort((a, b) => a - b).reverse());
+
   // TASK 5
   const postsFromOldWordpress: PostFromOldWordpress[] = fs.readJsonSync(
     "sourceData/postsFromOldWordpress.json"
@@ -129,8 +136,9 @@ export const getQuestionsFromExcel = (excel: ExcelFileInfo): AllQuestionsData =>
     examQuestions32: allQuestions.slice(0, 32),
   };
 
-  const arra20 = Array.from(Array(20).keys()).map((i) => i + 1);
-  const allExams: Exam[] = arra20.map((i) => {
+  const howManyExamsToCreate = 35;
+  const arrayToCreateExamsFrom = Array.from(Array(howManyExamsToCreate).keys()).map((i) => i + 1);
+  const allExams: Exam[] = arrayToCreateExamsFrom.map((i) => {
     const allQuestionsShuffled = allQuestions.sort(() => Math.random() - 0.5);
 
     return {
