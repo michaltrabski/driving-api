@@ -2,6 +2,8 @@ const fs = require("fs-extra");
 const _ = require("lodash");
 
 import { convertExcelToJson } from "./excelToJson";
+import { getAllPostsFromOldWordpress } from "./getAllPostsFromOldWordpress";
+import { getAllQuestionsAndCategories, QuestionFromExcel } from "./getAllQuestions";
 import { AllQuestionsData, Category, Exam, Explanation, PostFromOldWordpress, Question } from "./types";
 import { convertMediaNameToPngOrMp4, textToSlug } from "./utils";
 
@@ -17,17 +19,7 @@ const KATEGORIE = "Kategorie";
 const POPRAWNA_ODP = "Poprawna odp";
 const SCORE = "Liczba punktów";
 
-interface QuestionFromExcel {
-  [NUMER_PYTANIA]: string;
-  [PYTANIE]: string;
-  [MEDIA]: string;
-  [ODPOWIEDZ_A]: string;
-  [ODPOWIEDZ_B]: string;
-  [ODPOWIEDZ_C]: string;
-  [KATEGORIE]: string;
-  [POPRAWNA_ODP]: string;
-  [SCORE]: string;
-}
+
 
 export interface ExcelFileInfo {
   excelSource: string;
@@ -57,21 +49,14 @@ export const createQuestionsData = (excels: ExcelFileInfo[]): AllQuestionsData =
 export const getQuestionsFromExcel = (excel: ExcelFileInfo): AllQuestionsData => {
   const excelFile = convertExcelToJson(excel.excelSource);
 
-  // TASK 1
+ 
   const excelQuestions = excelFile[EXCEL_SHEET_NAME] as QuestionFromExcel[];
-  // console.log("CONVERT EXCEL QUESTIONS TO JSON", "excelQuestions ===", excelQuestions[0]);
 
-  // TASK 2
-  const missingFields: string[] = [];
-  requiredFields.forEach((field) => {
-    if (!Object.keys(excelQuestions[0]).includes(field)) missingFields.push(field);
-  });
+  const {allQuestions,allCategories } = getAllQuestionsAndCategories(excelQuestions);
+  console.log(1,"allQuestions.length ===", allQuestions.length);
+  console.log(2, "allCategories.length ===", allCategories.length);
+ 
 
-  if (missingFields.length > 0) {
-    throw new Error(`Missing fields === ${missingFields.join(", ")}`);
-  }
-
-  const allCategoriesSet = new Set<string>();
 
   // TASK 3 - create allExplanations
   const masterQuestions = fs.readJsonSync("sourceData/masterQuestions.json");
@@ -90,45 +75,8 @@ export const getQuestionsFromExcel = (excel: ExcelFileInfo): AllQuestionsData =>
     return newExplanation;
   });
 
-  // TASK 4
-  const slughLenghtSet = new Set<number>();
-
-  const allQuestions = excelQuestions.map((excelQuestion) => {
-    const categories: Category[] = excelQuestion[KATEGORIE].toLowerCase().split(",") as Category[];
-    categories.forEach((cat) => allCategoriesSet.add(cat));
-
-    const text = excelQuestion[PYTANIE];
-    const id = `id${excelQuestion[NUMER_PYTANIA]}`;
-    const m = convertMediaNameToPngOrMp4(excelQuestion[MEDIA]) || "";
-
-    slughLenghtSet.add(textToSlug(text, id).length);
-
-    const newQuestion: Question = {
-      id,
-      text,
-      slug: textToSlug(text, id),
-      media: m,
-      a: excelQuestion[ODPOWIEDZ_A],
-      b: excelQuestion[ODPOWIEDZ_B],
-      c: excelQuestion[ODPOWIEDZ_C],
-      r: excelQuestion[POPRAWNA_ODP].toLowerCase(),
-      categories: categories,
-      score: +excelQuestion[SCORE],
-    };
-    return newQuestion;
-  });
-
-  console.log("slug to generate page can not be more that aprox 180 characters");
-  console.log("slughLenghtSet ===", [...slughLenghtSet].sort((a, b) => a - b).reverse());
-
-  // TASK 5
-  const postsFromOldWordpress: PostFromOldWordpress[] = fs.readJsonSync(
-    "sourceData/postsFromOldWordpress.json"
-  ).postsFromOldWordpress;
-
-  // TASK 6 order posts
-  const orderedPostsFromOldWordpress = [..._.sortBy(postsFromOldWordpress, ["date"])].reverse();
-
+   
+ 
   const examExample: Exam = {
     examName: "",
     examSlug: "",
@@ -150,12 +98,14 @@ export const getQuestionsFromExcel = (excel: ExcelFileInfo): AllQuestionsData =>
     };
   });
 
-  const allQuestionsShuffled = allQuestions.sort(() => Math.random() - 0.5);
+
+
+  const { allPostsFromOldWordpress } = getAllPostsFromOldWordpress();
 
   const allQuestionsData: AllQuestionsData = {
-    allQuestions: allQuestionsShuffled,
-    allCategories: _.sortBy([...allCategoriesSet] as Category[]),
-    allPostsFromOldWordpress: orderedPostsFromOldWordpress,
+    allQuestions,
+    allCategories,
+    allPostsFromOldWordpress,
     allExplanations,
     allExams,
   };

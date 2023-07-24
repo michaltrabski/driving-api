@@ -2,7 +2,7 @@ const path = require("fs-extra");
 const fs = require("fs-extra");
 require("dotenv").config();
 
-import { createQuestionsData, ExcelFileInfo, getQuestionsFromExcel } from "./app/createQuestionsData";
+import { createQuestionsData, ExcelFileInfo  } from "./app/createQuestionsData";
 import { resizeMedia } from "./app/createQuestionsMedia";
 import { unzip } from "./app/unzip";
 import { getPhpCode } from "./app/utils";
@@ -28,11 +28,6 @@ const start = async () => {
       getExcels()
     );
 
-    // console.log(1, "allQuestions", allQuestions.slice(0, 1));
-    // console.log(2, "allCategories", allCategories);
-    // console.log(3, "allPostsFromOldWordpress", allPostsFromOldWordpress.slice(0, 1));
-    // console.log(4, "allExplanations", allExplanations.slice(0, 1));
-    // console.log(5, "allExams", allExams.slice(0, 1));
 
     // remove folder sync
     fs.removeSync("php/api");
@@ -47,50 +42,53 @@ const start = async () => {
     fs.outputJsonSync(`php/api/${fileNameAllQuestions}.json`, fileNameAllQuestionsObj);
     fs.outputFileSync(`php/api/${fileNameAllQuestions}.php`, getPhpCode(fileNameAllQuestions));
 
-    // TODO - remove duplicates and questions that are created form allQuestions
-    const fileNameWordpress = "all-posts-from-old-wordpress";
-    const fileNameWordpressObj = {
-      allPostsFromOldWordpressCount: allPostsFromOldWordpress.length,
-      allPostsFromOldWordpress,
-    };
-    fs.outputJsonSync(`php/api/${fileNameWordpress}.json`, fileNameWordpressObj);
-    fs.outputFileSync(`php/api/${fileNameWordpress}.php`, getPhpCode(fileNameWordpress));
+    // all-explanations
+    [1, 2, 3, 4, 5].forEach((nr, index, arr) => {
+      const fileName = `all-explanations-${nr}`;
+      const sliceBy = Math.ceil(allExplanations.length / arr.length);
 
-    {
-      const fileName = "all-explanations";
+      const sliceFrom = sliceBy * index;
+      const sliceTo = index === arr.length - 1 ? allExplanations.length : sliceBy + sliceBy * index;
+
+      console.log(fileName, "sliceFrom", sliceFrom);
+      console.log(fileName, "sliceTo", sliceTo);
+
+      const allExplanationsSliced = allExplanations.slice(index === 0 ? 0 : sliceFrom, sliceTo);
       const data = {
-        allExplanationsCount: allExplanations.length,
-        allExplanations,
+        allExplanationsCount: allExplanationsSliced.length,
+        allExplanations: allExplanationsSliced,
       };
-      fs.outputJsonSync(`php/api/${fileName}.json`, data);
-      fs.outputFileSync(`php/api/${fileName}.php`, getPhpCode(fileName));
-      [1,2,3].forEach((name, index, arr) => {
-        const fileName = `all-explanations-${name}`;
-        const sliceBy = Math.ceil(allExplanations.length / arr.length);
+      createApiFile(fileName, data);
+ 
+    });
 
-        const sliceFrom = sliceBy * index;
-        const sliceTo = index === arr.length -1 ? allExplanations.length : sliceBy + sliceBy * index;
-
-        console.log(name,"sliceFrom", sliceFrom )
-        console.log(name,"sliceTo", sliceTo )
-
-        const allExplanationsSliced = allExplanations.slice(index === 0 ? 0 : sliceFrom, sliceTo);
-        const data = {
-          allExplanationsCount: allExplanationsSliced.length,
-          allExplanations: allExplanationsSliced,
-        };
-        fs.outputJsonSync(`php/api/${fileName}.json`, data);
-        fs.outputFileSync(`php/api/${fileName}.php`, getPhpCode(fileName));
-      });
-    }
-
-    const fileNameAllExams = "all-exams";
-    const fileNameAllExamsObj = {
+    // all-exams
+    const fileName5 = "all-exams";
+    const data5 = {
       allExamsCount: allExams.length,
       allExams,
     };
-    fs.outputJsonSync(`php/api/${fileNameAllExams}.json`, fileNameAllExamsObj);
-    fs.outputFileSync(`php/api/${fileNameAllExams}.php`, getPhpCode(fileNameAllExams));
+    createApiFile(fileName5, data5);
+ 
+    [1].forEach((nr, index, arr) => {
+      const fileName = `all-posts-from-old-wordpress-${nr}`;
+      const sliceBy = Math.ceil(allPostsFromOldWordpress.length / arr.length);
+
+      const sliceFrom = sliceBy * index;
+      const sliceTo = index === arr.length - 1 ? allPostsFromOldWordpress.length : sliceBy + sliceBy * index;
+
+      console.log(fileName, "sliceFrom", sliceFrom);
+      console.log(fileName, "sliceTo", sliceTo);
+
+      const allPostsFromOldWordpressSliced = allPostsFromOldWordpress.slice(index === 0 ? 0 : sliceFrom, sliceTo);
+      const data = {
+        allPostsFromOldWordpressCount: allPostsFromOldWordpress.length,
+        allPostsFromOldWordpress:allPostsFromOldWordpressSliced,
+      };
+      createApiFile(fileName, data);
+ 
+    });
+
   } catch (err) {
     console.log("FAIL BECAUSE OF CATCH ERROR", err);
     // start();
@@ -114,4 +112,9 @@ function getExcels(): ExcelFileInfo[] {
   ];
 
   return excels;
+}
+
+function createApiFile(fileName: string, data: any) {
+  fs.outputJsonSync(`php/api/${fileName}.json`, data);
+  fs.outputFileSync(`php/api/${fileName}.php`, getPhpCode(fileName));
 }
