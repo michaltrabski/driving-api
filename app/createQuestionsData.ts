@@ -72,7 +72,7 @@ export const getQuestionsFromExcel = (excel: ExcelFileInfo): AllQuestionsData =>
     return newExplanation;
   });
 
-  const { allExams } = getAllExams(50, allQuestions);
+  const { allExams } = getAllExams( allQuestions);
 
   const { allPostsFromOldWordpress } = getAllPostsFromOldWordpress();
 

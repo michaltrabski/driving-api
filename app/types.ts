@@ -21,6 +21,8 @@ export interface Exam {
   examName: string;
   examSlug: string;
   examCategory: string;
+  allPossiblePoints: number;
+  minPointsToPass: number;
   examQuestions32: Question[];
 }
 

@@ -2,7 +2,7 @@ const path = require("fs-extra");
 const fs = require("fs-extra");
 require("dotenv").config();
 
-import { createQuestionsData, ExcelFileInfo  } from "./app/createQuestionsData";
+import { createQuestionsData, ExcelFileInfo } from "./app/createQuestionsData";
 import { resizeMedia } from "./app/createQuestionsMedia";
 import { unzip } from "./app/unzip";
 import { getPhpCode } from "./app/utils";
@@ -28,7 +28,6 @@ const start = async () => {
       getExcels()
     );
 
-
     // remove folder sync
     fs.removeSync("php/api");
 
@@ -50,8 +49,8 @@ const start = async () => {
       const sliceFrom = sliceBy * index;
       const sliceTo = index === arr.length - 1 ? allExplanations.length : sliceBy + sliceBy * index;
 
-      console.log(fileName, "sliceFrom", sliceFrom);
-      console.log(fileName, "sliceTo", sliceTo);
+      // console.log(fileName, "sliceFrom", sliceFrom);
+      // console.log(fileName, "sliceTo", sliceTo);
 
       const allExplanationsSliced = allExplanations.slice(index === 0 ? 0 : sliceFrom, sliceTo);
       const data = {
@@ -59,7 +58,6 @@ const start = async () => {
         allExplanations: allExplanationsSliced,
       };
       createApiFile(fileName, data);
- 
     });
 
     // all-exams
@@ -69,7 +67,7 @@ const start = async () => {
       allExams,
     };
     createApiFile(fileName5, data5);
- 
+
     [1].forEach((nr, index, arr) => {
       const fileName = `all-posts-from-old-wordpress-${nr}`;
       const sliceBy = Math.ceil(allPostsFromOldWordpress.length / arr.length);
@@ -77,18 +75,16 @@ const start = async () => {
       const sliceFrom = sliceBy * index;
       const sliceTo = index === arr.length - 1 ? allPostsFromOldWordpress.length : sliceBy + sliceBy * index;
 
-      console.log(fileName, "sliceFrom", sliceFrom);
-      console.log(fileName, "sliceTo", sliceTo);
+      // console.log(fileName, "sliceFrom", sliceFrom);
+      // console.log(fileName, "sliceTo", sliceTo);
 
       const allPostsFromOldWordpressSliced = allPostsFromOldWordpress.slice(index === 0 ? 0 : sliceFrom, sliceTo);
       const data = {
         allPostsFromOldWordpressCount: allPostsFromOldWordpress.length,
-        allPostsFromOldWordpress:allPostsFromOldWordpressSliced,
+        allPostsFromOldWordpress: allPostsFromOldWordpressSliced,
       };
       createApiFile(fileName, data);
- 
     });
-
   } catch (err) {
     console.log("FAIL BECAUSE OF CATCH ERROR", err);
     // start();
