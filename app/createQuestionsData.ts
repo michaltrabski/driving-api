@@ -3,10 +3,8 @@ const _ = require("lodash");
 
 import { convertExcelToJson } from "./excelToJson";
 import { getAllExams } from "./getAllExams";
-import { getAllPostsFromOldWordpress } from "./getAllPostsFromOldWordpress";
 import { getAllQuestionsAndCategories, QuestionFromExcel } from "./getAllQuestions";
-import { AllQuestionsData, Category, Exam, Explanation, PostFromOldWordpress, Question } from "./types";
-import { convertMediaNameToPngOrMp4, textToSlug } from "./utils";
+import { AllQuestionsData, Explanation } from "./types";
 
 const EXCEL_SHEET_NAME = "Treść pytania";
 
@@ -72,14 +70,11 @@ export const getQuestionsFromExcel = (excel: ExcelFileInfo): AllQuestionsData =>
     return newExplanation;
   });
 
-  const { allExams } = getAllExams( allQuestions);
-
-  const { allPostsFromOldWordpress } = getAllPostsFromOldWordpress();
+  const { allExams } = getAllExams(allQuestions);
 
   const allQuestionsData: AllQuestionsData = {
     allQuestions,
     allCategories,
-    allPostsFromOldWordpress,
     allExplanations,
     allExams,
   };

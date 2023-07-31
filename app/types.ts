@@ -29,7 +29,6 @@ export interface Exam {
 export interface AllQuestionsData {
   allQuestions: Question[];
   allCategories: Category[];
-  allPostsFromOldWordpress: PostFromOldWordpress[];
   allExplanations: Explanation[];
   allExams: Exam[];
 }
@@ -38,17 +37,15 @@ export interface AllQuestionsDataSlim {
   allQuestionsSlim: QuestionSlim[];
 }
 
-
-
 export interface Explanation {
   id: string;
   expl: string[];
-  topicId: string,
-  author: string,
-  lowNameOld: string,
-  lowName: string,
-  low: any[],
-  lowNames: string[]
+  topicId: string;
+  author: string;
+  lowNameOld: string;
+  lowName: string;
+  low: any[];
+  lowNames: string[];
 }
 
 export interface QuestionSlim {
@@ -95,13 +92,6 @@ export interface QuestionData extends Question {
   explanation: string;
 
   question_data_keys: string[];
-}
-
-export interface PostFromOldWordpress {
-  slug: string;
-  date: string;
-  title: string;
-  html: string;
 }
 
 export type Vote = "good" | "average" | "bad";

@@ -24,7 +24,7 @@ const start = async () => {
     // await resizeMedia();
 
     // TAKS - process excel files to create allQuestionsData
-    const { allExams, allQuestions, allCategories, allPostsFromOldWordpress, allExplanations } = createQuestionsData(
+    const { allExams, allQuestions, allCategories,  allExplanations } = createQuestionsData(
       getExcels()
     );
 
@@ -68,23 +68,7 @@ const start = async () => {
     };
     createApiFile(fileName5, data5);
 
-    [1].forEach((nr, index, arr) => {
-      const fileName = `all-posts-from-old-wordpress-${nr}`;
-      const sliceBy = Math.ceil(allPostsFromOldWordpress.length / arr.length);
-
-      const sliceFrom = sliceBy * index;
-      const sliceTo = index === arr.length - 1 ? allPostsFromOldWordpress.length : sliceBy + sliceBy * index;
-
-      // console.log(fileName, "sliceFrom", sliceFrom);
-      // console.log(fileName, "sliceTo", sliceTo);
-
-      const allPostsFromOldWordpressSliced = allPostsFromOldWordpress.slice(index === 0 ? 0 : sliceFrom, sliceTo);
-      const data = {
-        allPostsFromOldWordpressCount: allPostsFromOldWordpress.length,
-        allPostsFromOldWordpress: allPostsFromOldWordpressSliced,
-      };
-      createApiFile(fileName, data);
-    });
+ 
   } catch (err) {
     console.log("FAIL BECAUSE OF CATCH ERROR", err);
     // start();
