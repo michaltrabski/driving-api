@@ -17,6 +17,19 @@ export interface Question {
   score: number;
 }
 
+export interface Explanation {
+  id: string;
+  expl: string[];
+  topicId: string;
+  author: string;
+  lowNameOld: string;
+  lowName: string;
+  low: any[];
+  lowNames: string[];
+}
+
+export type QuestionWithExplanation = Question & Explanation;
+
 export interface Exam {
   examName: string;
   examSlug: string;
@@ -30,6 +43,7 @@ export interface AllQuestionsData {
   allQuestions: Question[];
   allCategories: Category[];
   allExplanations: Explanation[];
+  allQuestionsWithExplanations: QuestionWithExplanation[];
   allExams: Exam[];
 }
 
@@ -37,16 +51,7 @@ export interface AllQuestionsDataSlim {
   allQuestionsSlim: QuestionSlim[];
 }
 
-export interface Explanation {
-  id: string;
-  expl: string[];
-  topicId: string;
-  author: string;
-  lowNameOld: string;
-  lowName: string;
-  low: any[];
-  lowNames: string[];
-}
+
 
 export interface QuestionSlim {
   id: string;

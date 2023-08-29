@@ -1,8 +1,8 @@
-import { Question } from "./types";
-import { convertMediaNameToPngOrMp4, textToSlug } from "./utils";
-
 const fs = require("fs-extra");
 const _ = require("lodash");
+
+import { Question } from "./types";
+import { convertMediaNameToPngOrMp4, textToSlug } from "./utils";
 
 const NUMER_PYTANIA = "Numer pytania";
 const PYTANIE = "Pytanie";

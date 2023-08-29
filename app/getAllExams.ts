@@ -4,7 +4,7 @@ const fs = require("fs-extra");
 const _ = require("lodash");
 
 export const getAllExams = (allQuestions: Question[]) => {
-  const howManyExamsToCreate = 20;
+  const howManyExamsToCreate = 95;
 
   const examCategory = "b";
 
@@ -21,15 +21,20 @@ export const getAllExams = (allQuestions: Question[]) => {
 
     let allPossiblePoints = 0; // should be 74;
 
+    const arr2 = [1, 2];
+    const arr4 = [1, 2, 3, 4];
+    const arr6 = [1, 2, 3, 4, 5, 6];
+    const arr10 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
     const examQuestions32: Question[] = [
-      ...[1, 2, 3, 4].map(() => ({ score: 1, type: "yesno" })),
-      ...[1, 2, 3, 4, 5, 6].map(() => ({ score: 2, type: "yesno" })),
-      ...[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(() => ({ score: 3, type: "yesno" })),
-      ...[1, 2].map(() => ({ score: 1, type: "abc" })),
-      ...[1, 2, 3, 4].map(() => ({ score: 2, type: "abc" })),
-      ...[1, 2, 3, 4, 5, 6].map(() => ({ score: 3, type: "abc" })),
+      ...arr4.map(() => ({ score: 1, type: "yesno" })),
+      ...arr6.map(() => ({ score: 2, type: "yesno" })),
+      ...arr10.map(() => ({ score: 3, type: "yesno" })),
+      ...arr2.map(() => ({ score: 1, type: "abc" })),
+      ...arr4.map(() => ({ score: 2, type: "abc" })),
+      ...arr6.map(() => ({ score: 3, type: "abc" })),
     ].map(({ score, type }, index) => {
-      console.log(index, muttableQuestionsArr.length);
+      // console.log(index, muttableQuestionsArr.length);
 
       allPossiblePoints += score;
 

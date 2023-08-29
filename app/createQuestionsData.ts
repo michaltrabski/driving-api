@@ -3,7 +3,9 @@ const _ = require("lodash");
 
 import { convertExcelToJson } from "./excelToJson";
 import { getAllExams } from "./getAllExams";
+import { getAllExplanations } from "./getAllExplanations";
 import { getAllQuestionsAndCategories, QuestionFromExcel } from "./getAllQuestions";
+import { getAllQuestionsWithExplanations } from "./getAllQuestionsWithExplanations";
 import { AllQuestionsData, Explanation } from "./types";
 
 const EXCEL_SHEET_NAME = "Treść pytania";
@@ -54,28 +56,22 @@ export const getQuestionsFromExcel = (excel: ExcelFileInfo): AllQuestionsData =>
   console.log(2, "allCategories.length ===", allCategories.length);
 
   // ----------------------------------------
-  const masterQuestions = fs.readJsonSync("sourceData/masterQuestions.json");
-  const allExplanations = masterQuestions.allQuestions.map((q: any) => {
-    const newExplanation: Explanation = {
-      id: q.id,
-      expl: q.expl,
-      topicId: q.topicId,
-      author: q.author,
-      lowNameOld: q.lowNameOld,
-      lowName: q.lowName,
-      low: q.low,
-      lowNames: q.lowNames,
-    };
+  const allExplanations = getAllExplanations();
+  console.log(3, "allExplanations.length ===", allExplanations.length);
 
-    return newExplanation;
-  });
+  // ----------------------------------------
+  const allQuestionsWithExplanations = getAllQuestionsWithExplanations(allQuestions, allExplanations);
+  console.log(4, "allQuestionsWithExplanations.length ===", allQuestionsWithExplanations.length);
 
+  // ----------------------------------------
   const { allExams } = getAllExams(allQuestions);
+  console.log(5, "allExams.length ===", allExams.length);
 
   const allQuestionsData: AllQuestionsData = {
     allQuestions,
     allCategories,
     allExplanations,
+    allQuestionsWithExplanations,
     allExams,
   };
 

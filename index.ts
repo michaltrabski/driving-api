@@ -24,9 +24,8 @@ const start = async () => {
     // await resizeMedia();
 
     // TAKS - process excel files to create allQuestionsData
-    const { allExams, allQuestions, allCategories,  allExplanations } = createQuestionsData(
-      getExcels()
-    );
+    const { allQuestions, allCategories, allExplanations, allQuestionsWithExplanations, allExams } =
+      createQuestionsData(getExcels());
 
     // remove folder sync
     fs.removeSync("php/api");
@@ -60,6 +59,28 @@ const start = async () => {
       createApiFile(fileName, data);
     });
 
+    // all-questions-with-explanations
+    [1, 2, 3, 4, 5].forEach((nr, index, arr) => {
+      const fileName = `all-questions-with-explanations-${nr}`;
+      const sliceBy = Math.ceil(allQuestionsWithExplanations.length / arr.length);
+
+      const sliceFrom = sliceBy * index;
+      const sliceTo = index === arr.length - 1 ? allQuestionsWithExplanations.length : sliceBy + sliceBy * index;
+
+      // console.log(fileName, "sliceFrom", sliceFrom);
+      // console.log(fileName, "sliceTo", sliceTo);
+
+      const allQuestionsWithExplanationsSliced = allQuestionsWithExplanations.slice(
+        index === 0 ? 0 : sliceFrom,
+        sliceTo
+      );
+      const data = {
+        allQuestionsWithExplanationsCount: allQuestionsWithExplanationsSliced.length,
+        allQuestionsWithExplanations: allQuestionsWithExplanationsSliced,
+      };
+      createApiFile(fileName, data);
+    });
+
     // all-exams
     const fileName5 = "all-exams";
     const data5 = {
@@ -67,8 +88,6 @@ const start = async () => {
       allExams,
     };
     createApiFile(fileName5, data5);
-
- 
   } catch (err) {
     console.log("FAIL BECAUSE OF CATCH ERROR", err);
     // start();
