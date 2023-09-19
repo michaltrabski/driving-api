@@ -8,7 +8,7 @@ import { getAllQuestionsAndCategories, QuestionFromExcel } from "./getAllQuestio
 import { getAllQuestionsWithExplanations } from "./getAllQuestionsWithExplanations";
 import { AllQuestionsData, Explanation } from "./types";
 
-const EXCEL_SHEET_NAME = "Treść pytania";
+const EXCEL_SHEET_NAME = "Arkusz1"; // "Treść pytania";
 
 const NUMER_PYTANIA = "Numer pytania";
 const PYTANIE = "Pytanie";
@@ -47,6 +47,8 @@ export const createQuestionsData = (excels: ExcelFileInfo[]): AllQuestionsData =
 
 export const getQuestionsFromExcel = (excel: ExcelFileInfo): AllQuestionsData => {
   const excelFile = convertExcelToJson(excel.excelSource);
+
+  console.log("excelFile===", EXCEL_SHEET_NAME, excelFile[EXCEL_SHEET_NAME][0])
 
   const excelQuestions = excelFile[EXCEL_SHEET_NAME] as QuestionFromExcel[];
 

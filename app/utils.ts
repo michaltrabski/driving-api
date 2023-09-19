@@ -1,4 +1,4 @@
-import { MODE } from "./types";
+import { RightAnswer } from "./extractExcelData";
 
 const fs = require("fs-extra");
 const path = require("path");
@@ -16,7 +16,7 @@ export function getPhpCode(fileName: string) {
 }
 
 export function textToSlug(text: string, id: string) {
-  let slug = `${text.slice(0,160)}-id-pytania-${id.replace("id", "")}`;
+  let slug = `${text.slice(0, 160)}-id-pytania-${id.replace("id", "")}`;
 
   slug = slug.replace(/^\s+|\s+$/g, ""); // trim
   slug = slug.toLowerCase();
@@ -35,8 +35,6 @@ export function textToSlug(text: string, id: string) {
 
   return slug;
 }
-
- 
 
 export function convertMediaNameToPngOrMp4(mediaName: string) {
   if (mediaName.endsWith(".jpg")) {
@@ -58,43 +56,63 @@ export function convertMediaNameToPngOrMp4(mediaName: string) {
   return mediaName;
 }
 
-// export const mediaNameWithoutExtention = (originalMediaName: string) => {
-//   return originalMediaName.split(".").slice(0, -1).join(".");
-// };
+export const getEnv = (variableName: string) => {
+  if (variableName === undefined) {
+    console.log(`ERROR: ENV VARIABLE: ${variableName} is not set in .env file`);
+    throw new Error(`ERROR: ENV VARIABLE: ${variableName} is not set in .env file`);
+  }
 
-// interface MediaList {
-//   media_original_file_name: string;
-//   media: string;
-// }
+  if (process.env[variableName] === undefined) {
+    console.log(`ERROR: ENV VARIABLE: ${variableName} is not set in .env file`);
+    throw new Error(`ERROR: ENV VARIABLE: ${variableName} is not set in .env file`);
+  }
 
-// export const removeTransformedMedia = () => {
-//   // TASK 2 - remove transformation folder and create it again
-//   const transformationFolder = getEnv("ABSOLUTE_PATH_FOLDER_FOR_TRANSFORMATION");
-//   fs.removeSync(transformationFolder);
-// };
+  return process.env[variableName] ?? "";
+};
 
-// export const getEnv = (variableName: string) => {
-//   if (variableName === undefined) {
-//     console.log(`ERROR: ENV VARIABLE: ${variableName} is not set in .env file`);
-//     throw new Error(`ERROR: ENV VARIABLE: ${variableName} is not set in .env file`);
-//   }
+export function isVideo(fileName: string) {
+  const videoExtensions = [".wmv", ".mp4", ".WMV", ".MP4"];
 
-//   if (process.env[variableName] === undefined) {
-//     console.log(`ERROR: ENV VARIABLE: ${variableName} is not set in .env file`);
-//     throw new Error(`ERROR: ENV VARIABLE: ${variableName} is not set in .env file`);
-//   }
+  return videoExtensions.some((ext) => fileName.endsWith(ext));
+}
+export function mediaNameWithoutExtention(mediaName: string) {
+  return mediaName.split(".").slice(0, -1).join(".");
+}
 
-//   return process.env[variableName] ?? "";
-// };
+export function normalizeABCTAKNIE(answer: string): RightAnswer | never {
+  if (answer.toLowerCase() === "tak" || answer.toLowerCase() === "t") {
+    return "t";
+  }
+  if (answer.toLowerCase() === "nie" || answer.toLowerCase() === "n") {
+    return "n";
+  }
+  if (answer.toLowerCase() === "a") {
+    return "a";
+  }
+  if  (answer.toLowerCase() === "b") {
+    return "b";
+  }
+  if (answer.toLowerCase() === "c") {
+    return "c";
+  }
 
-// export const getLimit = (): number => {
-//   const limitForDev = getEnv("LIMIT_QUESTIONS_FOR_DEVELOPMENT");
-//   const limitForProd = getEnv("LIMIT_QUESTIONS_FOR_PRODUCTION");
+  throw new Error(`ERROR: normalizeABCTAKNIE: answer: ${answer} is not valid`);
+}
 
-//   return process.env.NODE_ENV === MODE.DEVELOPMENT ? +limitForDev : +limitForProd;
-// };
+export function normalizeMediaName(mediaName: string) {
+  if (mediaName === "") {
+    return "";
+  }
 
-// export const isProduction = () => {
-//   // console.log(process.env.NODE_ENV === MODE.PRODUCTION)
-//   return process.env.NODE_ENV === MODE.PRODUCTION;
-// };
+  if (mediaName.endsWith(".jpg") || mediaName.endsWith(".JPG") || mediaName.endsWith(".jpeg") || mediaName.endsWith(".JPEG")) {
+    // replace last occurence of .jpg
+    return mediaName.replace(/\.jpg(?!.*\.jpg)/, ".png");
+  }
+
+  if (mediaName.endsWith(".wmv") || mediaName.endsWith(".WMV")) {
+    // replace last occurence of .wmv
+    return mediaName.replace(/\.wmv(?!.*\.wmv)/, ".mp4");
+  }
+
+  throw new Error(`ERROR: normalizeMediaName: mediaName: ${mediaName} is not valid`);
+}

@@ -27,8 +27,7 @@
     "nodemon": "^2.0.15",
     "sharp": "^0.30.4",
     "slugify": "^1.6.5",
-    "ts-node": "^10.7.0",
-    "uglifyjs-webpack-plugin": "^2.2.0"
+    "ts-node": "^10.7.0"
   },
   "nodemonConfig": {
     "ext": "ts, tsx, jsx, js, css, html, env",

@@ -4,10 +4,9 @@ require("dotenv").config();
 
 import { createQuestionsData, ExcelFileInfo } from "./app/createQuestionsData";
 import { resizeMedia } from "./app/createQuestionsMedia";
-import { unzip } from "./app/unzip";
+import { extractExcelData } from "./app/extractExcelData";
+import { unzip as unzipToFolder } from "./app/unzip";
 import { getPhpCode } from "./app/utils";
-
-// https://dacmwwxjyw.cfolks.pl/files/testy-na-prawo-jazdy/size-720/1_1472ztV.mp4
 
 const start = async () => {
   console.log("--------------------------START--------------------------");
@@ -16,16 +15,17 @@ const start = async () => {
   });
 
   try {
-    // you can put files in zip folders so I will unzip them
-    // resize media
-    // upload media to hosting
-
-    // await unzip();
+    // need to be fixed to move files to destination folder, npw it omit files not in zip folders
+    // await unzipToFolder();
     // await resizeMedia();
 
+    const questionBigDataArray =  extractExcelData();
+    console.log("questionBigDataArray.length", questionBigDataArray.length);
+
+    return;
+
     // TAKS - process excel files to create allQuestionsData
-    const { allQuestions, allCategories, allExplanations, allQuestionsWithExplanations, allExams } =
-      createQuestionsData(getExcels());
+    const { allQuestions, allCategories, allExplanations, allQuestionsWithExplanations, allExams } = createQuestionsData(getExcels());
 
     // remove folder sync
     fs.removeSync("php/api");
@@ -70,10 +70,7 @@ const start = async () => {
       // console.log(fileName, "sliceFrom", sliceFrom);
       // console.log(fileName, "sliceTo", sliceTo);
 
-      const allQuestionsWithExplanationsSliced = allQuestionsWithExplanations.slice(
-        index === 0 ? 0 : sliceFrom,
-        sliceTo
-      );
+      const allQuestionsWithExplanationsSliced = allQuestionsWithExplanations.slice(index === 0 ? 0 : sliceFrom, sliceTo);
       const data = {
         allQuestionsWithExplanationsCount: allQuestionsWithExplanationsSliced.length,
         allQuestionsWithExplanations: allQuestionsWithExplanationsSliced,
@@ -101,8 +98,12 @@ start();
 function getExcels(): ExcelFileInfo[] {
   const excels: ExcelFileInfo[] = [
     {
-      excelSource: "sourceData/Baza_pytań_na_egzamin_na_prawo_jazdy_22_02_2022r.xlsx",
+      excelSource: "sourceData/baza_pytań_dla_mi_27_06_2023.xlsx",
       isNewest: true,
+    },
+    {
+      excelSource: "sourceData/Baza_pytań_na_egzamin_na_prawo_jazdy_22_02_2022r.xlsx",
+      isNewest: false,
     },
     {
       excelSource: "sourceData/baza_pytań_na_prawo_jazdy__05.xlsx",

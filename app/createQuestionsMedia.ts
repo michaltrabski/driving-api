@@ -3,17 +3,12 @@ const path = require("path");
 const sharp = require("sharp");
 const ffmpeg = require("fluent-ffmpeg");
 
- 
-import {
-  getEnv,
-  isVideo,
-  mediaNameWithoutExtention,
-} from "./utils";
+import { getEnv, isVideo, mediaNameWithoutExtention } from "./utils";
 
 export const resizeMedia = async () => {
   const mediaWidth = +getEnv("TRANSFORMED_MEDIA_WIDTH");
-  const inputFolder = path.resolve(__dirname, '../',getEnv("FOLDER_WITH_FILES_BEFORE_PROCESSING"))
-  const outputFolder = path.resolve(__dirname, '../',getEnv("FOLDER_WITH_FILES_AFTER_PROCESSING"))
+  const inputFolder = path.resolve(__dirname, "../", getEnv("ABSOLUTE_PATH_FOLDER_FILES_BEFORE_PROCESSING"));
+  const outputFolder = path.resolve(__dirname, "../", getEnv("ABSOLUTE_PATH_FOLDER_FILES_AFTER_PROCESSING"));
 
   fs.ensureDirSync(inputFolder);
   fs.ensureDirSync(outputFolder);
@@ -26,36 +21,27 @@ export const resizeMedia = async () => {
     const newFileNameWidthPath = path.resolve(outputFolder, newFileName);
 
     if (!fs.existsSync(newFileNameWidthPath)) {
-      console.log("I TRY TO RESIZE THIS VIDEO / IMAGE",`originalFileName===${originalFileName}` , 
-      `if there is an error maybe a file ${originalFileName} is broken, so remove this file maybe`,
-      `Go to the folder: ${inputFolder}`,
-      `and remove file: ${originalFileName}`
-      
-      )
+      console.log("I TRY TO RESIZE THIS VIDEO / IMAGE");
+      console.log(`    originalFileName===${originalFileName}`);
+      console.log("    if there is an error maybe a file is broken, so remove this file maybe");
+      console.log(`    Go to the folder: ${inputFolder}`);
+      console.log(`    and remove file: ${originalFileName}`, "\n");
+
       if (isVideo(originalFileName)) {
         // TASK 2 - process videos
 
         await resizeVideo(inputFolder, outputFolder, originalFileName, newFileName, mediaWidth);
       } else {
         // TASK 3 - process images
-        const ImageObjectFromSharp = await sharp(path.resolve(inputFolder, originalFileName))
-          .resize(mediaWidth)
-          .png()
-          .toBuffer();
+        const ImageObjectFromSharp = await sharp(path.resolve(inputFolder, originalFileName)).resize(mediaWidth).png().toBuffer();
         fs.writeFileSync(newFileNameWidthPath, ImageObjectFromSharp);
       }
     }
   }
-  console.log(`ALL FILES RESIZED:`, `--- NEW WIDTH ==> ${mediaWidth}px`, `--- FROM FOLDER ==> ${inputFolder}`,`--- TO FOLDER ==> ${outputFolder}`);
+  console.log(`ALL FILES RESIZED:`, `--- NEW WIDTH ==> ${mediaWidth}px`, `--- FROM FOLDER ==> ${inputFolder}`, `--- TO FOLDER ==> ${outputFolder}`);
 };
 
-const resizeVideo = async (
-  inputFolder: string,
-  outputFolder: string,
-  originalFileName: string,
-  newFileName: string,
-  width: number
-): Promise<string> => {
+const resizeVideo = async (inputFolder: string, outputFolder: string, originalFileName: string, newFileName: string, width: number): Promise<string> => {
   return new Promise((resolve, reject) => {
     const fileToProcess = path.resolve(inputFolder, originalFileName);
 
@@ -66,19 +52,10 @@ const resizeVideo = async (
 
       ffmpeg()
         .input(fileToProcess)
-        // .inputOptions([`-ss ${start}`])
-        // .outputOptions([`-t ${endMinusStart}`])
         .output(output)
         .on("end", () => resolve(newFileName))
         .on("error", (err: any) => reject())
-        // .on("progress", (progress: any) => console.log(progress.percent, Math.floor(progress.percent) + "%"))
-        // .videoCodec("libx264")
-        // .videoBitrate(1000)
-        // .fps(29.97)
-        // .noAudio()
         .size(`${width}x?`)
-        // .videoFilters("fade=in:0:30")
-        // .videoFilters("fade=in:0:30", "pad=640:480:0:40:violet")
         .run();
     });
   });
