@@ -2,13 +2,9 @@ const fs = require("fs-extra");
 const path = require("path");
 
 import { convertExcelToJson } from "./excelToJson";
-import { getAllExams } from "./getAllExams";
-import { getAllExplanations } from "./getAllExplanations";
-import { getAllQuestionsAndCategories, QuestionFromExcel } from "./getAllQuestions";
-import { getAllQuestionsWithExplanations } from "./getAllQuestionsWithExplanations";
-import { AllQuestionsData, Explanation } from "./types";
 import { normalizeABCTAKNIE, normalizeMediaName } from "./utils";
 
+const LIMIT = 5;
 const SOURCE_DATA_FOLDER = "sourceData";
 
 const EXCEL_NAME_1 = "baza_pytań_dla_mi_27_06_2023.xlsx";
@@ -59,7 +55,23 @@ enum EXCEL2 {
 type Id = string;
 export type RightAnswer = "a" | "b" | "c" | "t" | "n";
 
-interface QuestionBigData {
+interface QuestionBigData1 {
+  id: Id;
+  isActive: boolean;
+  text: string;
+  textEn: string;
+  textDe: string;
+  a: string;
+  b: string;
+  c: string;
+  r: RightAnswer;
+  media: string;
+  kategorie: string[];
+  zrodloPytania: string;
+  jakiMaZwiazekZBezpieczenstwem: string;
+}
+
+interface QuestionBigData2 {
   id: Id;
   isActive: boolean;
   text: string;
@@ -77,10 +89,15 @@ interface QuestionBigData {
   jakiMaZwiazekZBezpieczenstwem: string;
 }
 
-interface QuestionBigDataObject {
-  [key: Id]: QuestionBigData;
+export interface QuestionBigData extends QuestionBigData1, QuestionBigData2 {}
+
+interface QuestionBigDataObject1 {
+  [key: Id]: QuestionBigData1;
 }
 
+interface QuestionBigDataObject2 {
+  [key: Id]: QuestionBigData2;
+}
 
 
 
@@ -99,19 +116,19 @@ export const extractExcelData = () => {
   const excelArray2 = excelJson2[EXCEL_2_SHEET_NAME] as any[];
 
   // console.log("excelArray1[0] ===", excelArray1[0]);
-  // console.log("excelArray2[0] ===", excelArray2[0]);
+  console.log("excelArray2[0] ===", excelArray2[0]);
 
-  const questionBigDataObject1: QuestionBigDataObject = {};
-  const questionBigDataObject2: QuestionBigDataObject = {};
+  const questionBigDataObject1: QuestionBigDataObject1 = {};
+  const questionBigDataObject2: QuestionBigDataObject2 = {};
 
   excelArray1
     .sort(() => Math.random() - 0.5)
-    .slice(0, 3)
+    .slice(0, LIMIT)
     .forEach((question) => {
       const id: Id = `id${question[EXCEL1.NUMER_PYTANIA]}`;
       const isActive = true;
 
-      const questionBigData1: QuestionBigData = {
+      const questionBigData1: QuestionBigData1 = {
         id,
         isActive,
         text: question[EXCEL1.PYTANIE],
@@ -122,10 +139,8 @@ export const extractExcelData = () => {
         c: question[EXCEL1.ODPOWIEDZ_C],
         r: normalizeABCTAKNIE(question[EXCEL1.POPRAWNA_ODP]),
         media: normalizeMediaName(question[EXCEL1.MEDIA]),
-        score: -1,
         kategorie: question[EXCEL1.KATEGORIE].toLowerCase().split(","),
         zrodloPytania: question[EXCEL1.ZRODLO_PYTANIA],
-        oCoChcemyZapytac: "",
         jakiMaZwiazekZBezpieczenstwem: question[EXCEL1.JAKI_MA_ZWIAZEK_Z_BEZPIECZENSTWEM],
       };
 
@@ -136,12 +151,12 @@ export const extractExcelData = () => {
 
   excelArray2
     .sort(() => Math.random() - 0.5)
-    .slice(0, 3)
+    .slice(0, LIMIT)
     .forEach((question) => {
       const id: Id = `id${question[EXCEL2.NUMER_PYTANIA]}`;
       const isActive = false;
 
-      const questionBigData2: QuestionBigData = {
+      const questionBigData2: QuestionBigData2 = {
         id,
         isActive,
         text: question[EXCEL2.PYTANIE],
@@ -164,6 +179,38 @@ export const extractExcelData = () => {
 
   // console.log("questionBigDataObject2 ===", questionBigDataObject2);
 
-  const questionBigDataArray: QuestionBigData[] = []
+  const ids1 = Object.keys(questionBigDataObject1);
+  const ids2 = Object.keys(questionBigDataObject2);
+
+  const ids = [...new Set([...ids1, ...ids2])];
+
+  const questionBigDataArray: QuestionBigData[] = ids.map((id) => {
+
+    const ex1 = questionBigDataObject1[id]
+    const ex2 = questionBigDataObject2[id]
+
+    // console.log({ex1,ex2})
+
+    const mergedObject: QuestionBigData = {
+      id: ex1?.id || ex2?.id,
+      isActive: ex1?.isActive || ex2?.isActive,
+      text: ex1?.text || ex2?.text,
+      textEn: ex1?.textEn || ex2?.textEn,
+      textDe: ex1?.textDe || ex2?.textDe,
+      a: ex1?.a || ex2?.a || "",
+      b: ex1?.b || ex2?.b || "",
+      c: ex1?.c || ex2?.c || "",
+      r: ex1?.r || ex2?.r,
+      media: ex1?.media || ex2?.media,
+      kategorie: ex1?.kategorie || ex2?.kategorie,
+      score: ex2?.score || 1, // 1 is default score because there is no score in excel1
+      zrodloPytania: ex1?.zrodloPytania || ex2?.zrodloPytania,
+      oCoChcemyZapytac:  ex2?.oCoChcemyZapytac || "",
+      jakiMaZwiazekZBezpieczenstwem: ex1?.jakiMaZwiazekZBezpieczenstwem || ex2?.jakiMaZwiazekZBezpieczenstwem,
+    }
+
+    return mergedObject
+  } );
+
   return questionBigDataArray;
 };

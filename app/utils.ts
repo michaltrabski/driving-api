@@ -15,6 +15,19 @@ export function getPhpCode(fileName: string) {
               echo $jsonData;`;
 }
 
+export function getHtmlCode(objAsString: string) {
+  return `
+              <html>
+                <head>
+                  <title>PHP API</title>
+                </head>
+                <body>
+                  <pre>${objAsString}</pre>
+                </body>
+              </html>
+  `;
+}
+
 export function textToSlug(text: string, id: string) {
   let slug = `${text.slice(0, 160)}-id-pytania-${id.replace("id", "")}`;
 
@@ -89,7 +102,7 @@ export function normalizeABCTAKNIE(answer: string): RightAnswer | never {
   if (answer.toLowerCase() === "a") {
     return "a";
   }
-  if  (answer.toLowerCase() === "b") {
+  if (answer.toLowerCase() === "b") {
     return "b";
   }
   if (answer.toLowerCase() === "c") {
