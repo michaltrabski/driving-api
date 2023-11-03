@@ -1,33 +1,26 @@
 const fs = require("fs-extra");
 const _ = require("lodash");
 
-import { QuestionBigData } from "./extractExcelData";
 import { getAllExams } from "./getAllExams";
 import { getAllExplanations } from "./getAllExplanations";
 import { getAllQuestionsAndCategories } from "./getAllQuestions";
+import { getAllQuestionsSmall } from "./getAllQuestionsSmall";
 import { getAllQuestionsWithExplanations } from "./getAllQuestionsWithExplanations";
-import { AllQuestionsData, Explanation } from "./types";
+import { AllQuestionsData, QuestionFromExcel } from "./types";
 
-export const getQuestionsData = (questionBigDataArray: QuestionBigData[]): AllQuestionsData => {
-  // ----------------------------------------
-  const { allQuestions, allCategories } = getAllQuestionsAndCategories(questionBigDataArray);
-  console.log(1, "allQuestions.length ===", allQuestions.length);
-  console.log(2, "allCategories.length ===", allCategories.length);
+export const getQuestionsData = (questionsFromExcel: QuestionFromExcel[]): AllQuestionsData => {
+  const { allQuestions, allCategories } = getAllQuestionsAndCategories(questionsFromExcel);
 
-  // ----------------------------------------
   const allExplanations = getAllExplanations();
-  console.log(3, "allExplanations.length ===", allExplanations.length);
 
-  // ----------------------------------------
-  const allQuestionsWithExplanations = getAllQuestionsWithExplanations(allQuestions, allExplanations);
-  console.log(4, "allQuestionsWithExplanations.length ===", allQuestionsWithExplanations.length);
+  const allQuestionsWithExplanations = getAllQuestionsWithExplanations(allQuestions, allExplanations, questionsFromExcel);
 
-  // ----------------------------------------
-  const { allExams } = getAllExams(allQuestions);
-  console.log(5, "allExams.length ===", allExams.length);
+  const { allExams } = getAllExams(allQuestionsWithExplanations);
+
+  const allQuestionsSmall = getAllQuestionsSmall(allQuestionsWithExplanations);
 
   const allQuestionsData: AllQuestionsData = {
-    allQuestions,
+    allQuestionsSmall,
     allCategories,
     allExplanations,
     allQuestionsWithExplanations,

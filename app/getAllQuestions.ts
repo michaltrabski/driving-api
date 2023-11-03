@@ -1,18 +1,18 @@
 const fs = require("fs-extra");
 const _ = require("lodash");
 
-import { QuestionBigData } from "./extractExcelData";
-import { Question } from "./types";
-import { convertMediaNameToPngOrMp4, textToSlug } from "./utils";
 
-export const getAllQuestionsAndCategories = (excelQuestions: QuestionBigData[]) => {
+import { Question, QuestionFromExcel } from "./types";
+import {  textToSlug } from "./utils";
+
+export const getAllQuestionsAndCategories = (excelQuestions: QuestionFromExcel[]) => {
   const allCategoriesSet = new Set<string>();
 
   const allQuestions = excelQuestions.map((excelQuestion) => {
-    const categories: string[] = excelQuestion.kategorie;
+    const categories: string[] = excelQuestion.categories;
     categories.forEach((cat) => allCategoriesSet.add(cat));
 
-    const { id, text, media, a, b, c, r, score } = excelQuestion;
+    const { id, text: text, media: media, a, b, c, r, score: score } = excelQuestion;
 
     const newQuestion: Question = {
       id,

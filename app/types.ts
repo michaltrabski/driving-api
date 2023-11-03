@@ -1,8 +1,13 @@
+import { QuestionFromExcel1, QuestionFromExcel2 } from "./extractExcelData";
+
 export enum MODE {
   DEVELOPMENT = "development",
   PRODUCTION = "production",
   PREBUILD = "prebuild",
 }
+
+export type Id = string;
+export type RightAnswer = "a" | "b" | "c" | "t" | "n";
 
 export interface Question {
   id: string;
@@ -12,9 +17,22 @@ export interface Question {
   a: string;
   b: string;
   c: string;
-  r: string;
+  r: RightAnswer;
   categories: string[];
   score: number;
+}
+
+export interface QuestionSmall {
+  id: string;
+  text: string;
+  a: string;
+  b: string;
+  c: string;
+  r: string;
+  media: string;
+  categories: string[];
+  score: number;
+  slug: string;
 }
 
 export interface Explanation {
@@ -28,7 +46,9 @@ export interface Explanation {
   lowNames: string[];
 }
 
-export type QuestionWithExplanation = Question & Explanation;
+export interface QuestionFromExcel extends QuestionFromExcel1, QuestionFromExcel2 {}
+
+export interface QuestionWithExplanation extends Question, Explanation, QuestionFromExcel {}
 
 export interface Exam {
   examName: string;
@@ -36,68 +56,20 @@ export interface Exam {
   examCategory: string;
   allPossiblePoints: number;
   minPointsToPass: number;
-  examQuestions32: Question[];
+  examQuestions32: QuestionWithExplanation[];
 }
 
 export interface AllQuestionsData {
-  allQuestions: Question[];
   allCategories: Category[];
   allExplanations: Explanation[];
   allQuestionsWithExplanations: QuestionWithExplanation[];
   allExams: Exam[];
-}
-
-export interface AllQuestionsDataSlim {
-  allQuestionsSlim: QuestionSlim[];
+  allQuestionsSmall: QuestionSmall[];
 }
 
 
 
-export interface QuestionSlim {
-  id: string;
-  t: string;
-  m: string;
-  a?: string;
-  b?: string;
-  c?: string;
-  right: CorrectAnswer;
-  cats: Category[];
-  s: number;
-}
 
-export interface QuestionData extends Question {
-  nr: number;
-  category: Category;
-  slug: string;
-  prev_question_slug: string;
-  next_question_slug: string;
-
-  next_10_question_slug: string;
-  nr_10: number;
-  next_20_question_slug: string;
-  nr_20: number;
-  // repeat 10 times
-  next_30_question_slug: string;
-  nr_30: number;
-  next_40_question_slug: string;
-  nr_40: number;
-  next_50_question_slug: string;
-  nr_50: number;
-  next_60_question_slug: string;
-  nr_60: number;
-  next_70_question_slug: string;
-  nr_70: number;
-  next_80_question_slug: string;
-  nr_80: number;
-  next_90_question_slug: string;
-  nr_90: number;
-  next_100_question_slug: string;
-  nr_100: number;
-
-  explanation: string;
-
-  question_data_keys: string[];
-}
 
 export type Vote = "good" | "average" | "bad";
 

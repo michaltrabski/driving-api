@@ -4,9 +4,9 @@ const _ = require("lodash");
 import { convertExcelToJson } from "./excelToJson";
 import { getAllExams } from "./getAllExams";
 import { getAllExplanations } from "./getAllExplanations";
-import { getAllQuestionsAndCategories, QuestionFromExcel } from "./getAllQuestions";
+import { getAllQuestionsAndCategories    } from "./getAllQuestions";
 import { getAllQuestionsWithExplanations } from "./getAllQuestionsWithExplanations";
-import { AllQuestionsData, Explanation } from "./types";
+import { AllQuestionsData, Explanation, QuestionFromExcel } from "./types";
 
 const EXCEL_SHEET_NAME = "Arkusz1"; // "Treść pytania";
 
@@ -19,13 +19,13 @@ export interface ExcelFileInfo {
 
 
 
-export const createQuestionsData = (excels: ExcelFileInfo[]): AllQuestionsData => {
-  const newestExcel = excels.find((excel) => excel.isNewest) || excels[0];
+// export const createQuestionsData = (excels: ExcelFileInfo[]): AllQuestionsData => {
+//   const newestExcel = excels.find((excel) => excel.isNewest) || excels[0];
 
-  const allQuestionsData = getQuestionsFromExcel(newestExcel);
+//   const allQuestionsData = getQuestionsFromExcel(newestExcel);
 
-  return allQuestionsData;
-};
+//   return allQuestionsData;
+// };
 
 export const getQuestionsFromExcel = (excel: ExcelFileInfo): AllQuestionsData => {
   const excelFile = convertExcelToJson(excel.excelSource);
@@ -44,11 +44,11 @@ export const getQuestionsFromExcel = (excel: ExcelFileInfo): AllQuestionsData =>
   console.log(3, "allExplanations.length ===", allExplanations.length);
 
   // ----------------------------------------
-  const allQuestionsWithExplanations = getAllQuestionsWithExplanations(allQuestions, allExplanations);
+  const allQuestionsWithExplanations = getAllQuestionsWithExplanations(allQuestions, allExplanations, excelQuestions);
   console.log(4, "allQuestionsWithExplanations.length ===", allQuestionsWithExplanations.length);
 
   // ----------------------------------------
-  const { allExams } = getAllExams(allQuestions);
+  const { allExams } = getAllExams(allQuestions,allQuestionsWithExplanations);
   console.log(5, "allExams.length ===", allExams.length);
 
   const allQuestionsData: AllQuestionsData = {

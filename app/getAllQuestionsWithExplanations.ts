@@ -1,19 +1,21 @@
-import { Explanation, Question, QuestionWithExplanation } from "./types";
+import { Explanation, Question, QuestionFromExcel, QuestionWithExplanation } from "./types";
+import { textToSlug } from "./utils";
 
-const fs = require("fs-extra");
-const _ = require("lodash");
 
-export const getAllQuestionsWithExplanations = (
-  allQuestions: Question[],
-  allExplanations: Explanation[]
-): QuestionWithExplanation[] => {
-  console.log(allQuestions[0], allExplanations[0]);
 
-  const allQuestionsWithExplanations: QuestionWithExplanation[] = allQuestions.map((question) => {
+export const getAllQuestionsWithExplanations = (allQuestions: Question[], allExplanations: Explanation[], questionsFromExcel: QuestionFromExcel[]): QuestionWithExplanation[] => {
+  const allQuestionsWithExplanations: QuestionWithExplanation[] = questionsFromExcel.map((question) => {
     const explanation = allExplanations.find((explanation) => explanation.id === question.id);
+
+
 
     return {
       ...question,
+
+      // add part from allQuestions
+      slug: textToSlug(question.text, question.id),
+
+      // add part from allExplanations
       expl: explanation ? explanation.expl : [],
       topicId: explanation ? explanation.topicId : "",
       author: explanation ? explanation.author : "",

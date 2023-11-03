@@ -1,4 +1,5 @@
-import { RightAnswer } from "./extractExcelData";
+import { RightAnswer } from "./types";
+
 
 const fs = require("fs-extra");
 const path = require("path");
@@ -16,16 +17,7 @@ export function getPhpCode(fileName: string) {
 }
 
 export function getHtmlCode(objAsString: string) {
-  return `
-              <html>
-                <head>
-                  <title>PHP API</title>
-                </head>
-                <body>
-                  <pre>${objAsString}</pre>
-                </body>
-              </html>
-  `;
+  return objAsString;
 }
 
 export function textToSlug(text: string, id: string) {
@@ -129,3 +121,7 @@ export function normalizeMediaName(mediaName: string) {
 
   throw new Error(`ERROR: normalizeMediaName: mediaName: ${mediaName} is not valid`);
 }
+
+
+export const isAnswerYesNo = (r: RightAnswer) => r === "t" || r === "n";
+export const IsAnswerABC = (r: RightAnswer) => r === "a" || r === "b" || r === "c";
