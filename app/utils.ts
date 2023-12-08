@@ -103,6 +103,26 @@ export function normalizeABCTAKNIE(answer: string): RightAnswer | never {
 
   throw new Error(`ERROR: normalizeABCTAKNIE: answer: ${answer} is not valid`);
 }
+export function reverseNormalizeABCTAKNIE(answer: RightAnswer): string | never {
+  if (answer === "t") {
+    return "tak";
+  }
+  if (answer === "n") {
+    return "nie";
+  }
+  if (answer === "a") {
+    return "a";
+  }
+  if (answer === "b") {
+    return "b";
+  }
+  if (answer === "c") {
+    return "c";
+  }
+
+  throw new Error(`ERROR: reverseNormalizeABCTAKNIE: answer: ${answer} is not valid`);
+}
+
 
 export function normalizeMediaName(mediaName: string) {
   if (mediaName === "") {

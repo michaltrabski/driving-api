@@ -2,6 +2,11 @@ const path = require("fs-extra");
 const fs = require("fs-extra");
 require("dotenv").config();
 
+import {
+  prepareDataForChatGpt,
+  askChatGpt,
+  QuestionsToChatGpt,
+} from "./app/askChatGpt";
 import { getQuestionsData } from "./app/createQuestionsData";
 import { resizeMedia } from "./app/createQuestionsMedia";
 import { extractExcelData } from "./app/extractExcelData";
@@ -17,65 +22,36 @@ const start = async () => {
   });
 
   try {
-    fs.removeSync(PHP_API);
+    // fs.removeSync(PHP_API);
     // need to be fixed to move files to destination folder, npw it omit files not in zip folders
     // await unzipToFolder();
     // await resizeMedia();
-
-    const questionsFromExcel = extractExcelData();
-    // console.log("questionsFromExcel.length", questionsFromExcel.length);
-
+    // const questionsFromExcel = extractExcelData();
+    // console.log("questionsFromExcel.length", questionsFromExcel.length,questionsFromExcel[0]);
     // createApiFile("questions-from-excel", { questionsFromExcel });
-
-    const { allQuestionsSmall, allCategories,  allQuestionsWithExplanations, allExams } = getQuestionsData(questionsFromExcel);
-
-    createApiFile("all-exams", {
-      allExamsCount: allExams.length,
-      allExams,
-    });
-
-    createApiFile("all-categories", {
-      allCategoriesCount: allCategories.length,
-      allCategories,
-    });
-
-    createApiFile(`all-questions-big`, {
-      allQuestionsBigCount: allQuestionsWithExplanations.length,
-      allQuestionsBig: allQuestionsWithExplanations,
-    });
-
-    createApiFile(`all-questions-small`, {
-      allQuestionsSmallCount: allQuestionsSmall.length,
-      allQuestionsSmall: allQuestionsSmall,
-    });
-
-    // createApiFile("all-questions", {
-    //   allQuestionsCount: allQuestions.length,
+    // const {
+    //   allQuestionsSmall,
+    //   allCategories,
+    //   allQuestionsWithExplanations,
+    //   allExams,
+    // } = getQuestionsData(questionsFromExcel);
+    // await prepareDataForChatGpt(allQuestionsWithExplanations);
+    // return;
+    // createApiFile("all-exams", {
+    //   allExamsCount: allExams.length,
+    //   allExams,
+    // });
+    // createApiFile("all-categories", {
     //   allCategoriesCount: allCategories.length,
     //   allCategories,
-    //   allQuestions,
     // });
-
-    // [1, 2, 3, 4, 5].forEach((nr, index, arr) => {
-    //   const sliceBy = Math.ceil(allExplanations.length / arr.length);
-    //   const sliceFrom = sliceBy * index;
-    //   const sliceTo = index === arr.length - 1 ? allExplanations.length : sliceBy + sliceBy * index;
-    //   const allExplanationsSliced = allExplanations.slice(index === 0 ? 0 : sliceFrom, sliceTo);
-    //   createApiFile(`all-explanations-${nr}`, {
-    //     allExplanationsCount: allExplanationsSliced.length,
-    //     allExplanations: allExplanationsSliced,
-    //   });
+    // createApiFile(`all-questions-big`, {
+    //   allQuestionsBigCount: allQuestionsWithExplanations.length,
+    //   allQuestionsBig: allQuestionsWithExplanations,
     // });
-
-    // [1, 2, 3, 4, 5, 6, 7].forEach((nr, index, arr) => {
-    //   const sliceBy = Math.ceil(allQuestionsWithExplanations.length / arr.length);
-    //   const sliceFrom = sliceBy * index;
-    //   const sliceTo = index === arr.length - 1 ? allQuestionsWithExplanations.length : sliceBy + sliceBy * index;
-    //   const allQuestionsWithExplanationsSliced = allQuestionsWithExplanations.slice(index === 0 ? 0 : sliceFrom, sliceTo);
-    //   createApiFile(`all-questions-with-explanations-${nr}`, {
-    //     allQuestionsWithExplanationsCount: allQuestionsWithExplanationsSliced.length,
-    //     allQuestionsWithExplanations: allQuestionsWithExplanationsSliced,
-    //   });
+    // createApiFile(`all-questions-small`, {
+    //   allQuestionsSmallCount: allQuestionsSmall.length,
+    //   allQuestionsSmall: allQuestionsSmall,
     // });
   } catch (err) {
     console.log("FAIL BECAUSE OF CATCH ERROR", err);
