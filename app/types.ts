@@ -39,4 +39,6 @@ export interface QuestionBig {
   score: number;
   questionSource: string;
   relationToSafety: string;
+  explanationTesty360: string;
+  explanationGpt3?: string;
 }

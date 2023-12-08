@@ -1,6 +1,7 @@
 const excel4 = require("../sourceData/questionsFromExcel042020.json");
 const excel5 = require("../sourceData/questionsFromExcel052020.json");
 const excel6 = require("../sourceData/questionsFromExcel27062023.json");
+const expl360 = require("../sourceData/wyjasnienia360_08122023.json");
 
 import {
   NormalizedQuestionE4,
@@ -42,6 +43,7 @@ export const getQuestions = (): QuestionBig[] => {
       score: -1,
       questionSource: "error",
       relationToSafety: "error",
+      explanationTesty360: "",
     };
 
     if (q6) {
@@ -59,6 +61,7 @@ export const getQuestions = (): QuestionBig[] => {
       questionBig.score = q5?.score || q4?.score || 3; // there is no score in excel6
       questionBig.questionSource = q6.questionSource;
       questionBig.relationToSafety = q6.relationToSafety;
+      questionBig.explanationTesty360 = findExplanationTesty360ByText(q6.text);
 
       return questionBig;
     }
@@ -78,6 +81,7 @@ export const getQuestions = (): QuestionBig[] => {
       questionBig.score = q5.score;
       questionBig.questionSource = "";
       questionBig.relationToSafety = "";
+      questionBig.explanationTesty360 = findExplanationTesty360ByText(q5.text);
 
       return questionBig;
     }
@@ -97,6 +101,7 @@ export const getQuestions = (): QuestionBig[] => {
       questionBig.score = q4.score;
       questionBig.questionSource = "";
       questionBig.relationToSafety = "";
+      questionBig.explanationTesty360 = findExplanationTesty360ByText(q4.text);
 
       return questionBig;
     }
@@ -302,22 +307,38 @@ const normalizeRightAnswer = (r: string) => {
   return r;
 };
 
+const findExplanationTesty360ByText = (text: string) => {
+  const expl360Arr: {
+    idFromTesty360: string;
+    text: string;
+    topic: string;
+    explanationTesty360: string;
+  }[] = Object.values(expl360);
+
+  const expl = expl360Arr.find((expl) => expl.text === text);
+
+  if (!expl) {
+    return "";
+  }
+
+  return expl.explanationTesty360;
+};
 // // import { RightAnswer } from "./types";
 
 // // const fs = require("fs-extra");
 // // const path = require("path");
 
-// // export function getPhpCode(fileName: string) {
-// //   return `<?php
-// //               header('Content-Type: application/json');
-// //               header('Access-Control-Allow-Origin: *');
-// //               header('Access-Control-Allow-Methods: GET, POST');
-// //               header('Access-Control-Allow-Headers: Content-Type');
+export function getPhpCode(fileName: string) {
+  return `<?php
+              header('Content-Type: application/json');
+              header('Access-Control-Allow-Origin: *');
+              header('Access-Control-Allow-Methods: GET, POST');
+              header('Access-Control-Allow-Headers: Content-Type');
 
-// //               $jsonData = file_get_contents('${fileName}.json');
+              $jsonData = file_get_contents('${fileName}.json');
 
-// //               echo $jsonData;`;
-// // }
+              echo $jsonData;`;
+}
 
 // // export function getHtmlCode(objAsString: string) {
 // //   return objAsString;
@@ -406,25 +427,27 @@ const normalizeRightAnswer = (r: string) => {
 
 // //   throw new Error(`ERROR: normalizeABCTAKNIE: answer: ${answer} is not valid`);
 // // }
-// // export function reverseNormalizeABCTAKNIE(answer: RightAnswer): string | never {
-// //   if (answer === "t") {
-// //     return "tak";
-// //   }
-// //   if (answer === "n") {
-// //     return "nie";
-// //   }
-// //   if (answer === "a") {
-// //     return "a";
-// //   }
-// //   if (answer === "b") {
-// //     return "b";
-// //   }
-// //   if (answer === "c") {
-// //     return "c";
-// //   }
+export function reverseNormalizeABCTAKNIE(answer: string): string | never {
+  if (answer === "t") {
+    return "tak";
+  }
+  if (answer === "n") {
+    return "nie";
+  }
+  if (answer === "a") {
+    return "a";
+  }
+  if (answer === "b") {
+    return "b";
+  }
+  if (answer === "c") {
+    return "c";
+  }
 
-// //   throw new Error(`ERROR: reverseNormalizeABCTAKNIE: answer: ${answer} is not valid`);
-// // }
+  throw new Error(
+    `ERROR: reverseNormalizeABCTAKNIE: answer: ${answer} is not valid`
+  );
+}
 
 // // export function normalizeMediaName(mediaName: string) {
 // //   if (mediaName === "") {

@@ -1,17 +1,10 @@
 const fs = require("fs-extra");
 import { ChatCompletionMessageParam } from "openai/resources";
+require("dotenv").config();
 
 import openai from "../gpt/open-ai";
-import { QuestionWithExplanation } from "./types";
+import { QuestionBig } from "./types";
 import { reverseNormalizeABCTAKNIE } from "./utils";
-
-// const question = "test";
-// const answer = await askChatGpt(question);
-// fs.outputJsonSync(`${CHAT_GPT_ANSWERS}/chat-gpt.json`, {
-//   question,
-//   answer,
-// });
-// console.log("Chat GPT: ", { question, answer });
 
 const CHAT_GPT_ANSWERS = "chat-gpt-answers";
 
@@ -24,64 +17,65 @@ export const askChatGpt = async (
   saveAnswerWithKey: string,
   question: string
 ) => {
-  await new Promise((resolve) => setTimeout(resolve, 555));
+  await new Promise((resolve) => setTimeout(resolve, 1));
 
-  // check if answer exists
-  try {
-    const jsonWithAnswer = fs.readJsonSync(
-      `${CHAT_GPT_ANSWERS}/${saveAnswerWithKey}.json`,
-      {
-        throws: false,
-      }
-    );
+  console.log("I blocked askChatGpt function, check it and uncomment");
+  return;
 
-    if (jsonWithAnswer && jsonWithAnswer.answer) {
-      console.log(
-        "Chat GPT answer from file: ",
-        question,
-        jsonWithAnswer.answer.slice(0, 100)
-      );
-      return jsonWithAnswer.answer;
-    }
-  } catch (error) {
-    console.log("Chat GPT jsonWithAnswer error: ", error);
-  }
+  // try {
+  //   const jsonWithAnswer = fs.readJsonSync(
+  //     `${CHAT_GPT_ANSWERS}/${saveAnswerWithKey}.json`,
+  //     {
+  //       throws: false,
+  //     }
+  //   );
 
-  const message: ChatCompletionMessageParam = {
-    role: "user",
-    content: question,
-  };
+  //   if (jsonWithAnswer && jsonWithAnswer.answer) {
+  //     console.log(
+  //       "Chat GPT answer from file: ",
+  //       question.slice(0, 30),
+  //       jsonWithAnswer.answer.slice(0, 30)
+  //     );
+  //     return jsonWithAnswer.answer;
+  //   }
+  // } catch (error) {
+  //   console.log("Chat GPT jsonWithAnswer error: ", error);
+  // }
 
-  // Call the API with user input
-  const chatCompletion = await openai.chat.completions.create({
-    messages: [message],
-    model: "gpt-3.5-turbo",
-  });
+  // const message: ChatCompletionMessageParam = {
+  //   role: "user",
+  //   content: question,
+  // };
 
-  const answer = chatCompletion.choices[0].message.content;
+  // const chatCompletion = await openai.chat.completions.create({
+  //   messages: [message],
+  //   model: "gpt-3.5-turbo",
+  // });
 
-  if (!answer) {
-    throw new Error("Chat GPT answer is empty");
-  }
+  // const answer = chatCompletion.choices[0].message.content;
 
-  console.log("Chat GPT answer from chat: ", question, answer.slice(0, 100));
+  // if (!answer) {
+  //   throw new Error("Chat GPT answer is empty");
+  // }
 
-  fs.outputJsonSync(`${CHAT_GPT_ANSWERS}/${saveAnswerWithKey}.json`, {
-    userQuestion: question,
-    answer,
-  });
+  // console.log(
+  //   "Chat GPT answer from chat: ",
+  //   question.slice(0, 30),
+  //   answer?.slice(0, 30)
+  // );
 
-  return answer;
+  // fs.outputJsonSync(`${CHAT_GPT_ANSWERS}/${saveAnswerWithKey}.json`, {
+  //   userQuestion: question,
+  //   answer,
+  // });
+
+  // return answer;
 };
 
-export const prepareDataForChatGpt = async (
-  allQuestionsBig: QuestionWithExplanation[]
-) => {
-  // const questions = [
-  //   ...allQuestionsBig.filter((q) => q.expl.length > 0).slice(0, 3),
-  // ];
-
-  const questions = [...allQuestionsBig];
+export const prepareDataForChatGpt = async (questionsBig: QuestionBig[]) => {
+  const questions = questionsBig
+    .filter((q) => q.explanationTesty360)
+    .slice(0, 5);
 
   const questionsToChatGpt: QuestionsToChatGpt[] = questions.map((q) => {
     const saveAnswerWithKey = q.id;
@@ -98,14 +92,14 @@ export const prepareDataForChatGpt = async (
             tak / nie
             Prawidłowa odpowiedź: ${reverseNormalizeABCTAKNIE(q.r)}
 
-            Uzasadnienie: ${JSON.stringify(q.expl)}
+            Uzasadnienie: ${JSON.stringify(q.explanationTesty360)}
 
             Podaj odpowiedź w postaci objektu javascript spełniającego interfejs
                 interface Explanation {
                     id: string;
-                    shortExplnation: string; // odpowiedź krótka długości 1 zdania.
-                    longExplanation: string; // odpowiedź długości 5 zdań
-                    textSeo: string; // tekst SEO na stronę internetową długości 10 zdań. Powinien zawierać słowa kluczowe i informacje.
+                    shortExplnation: string; // odpowiedź krótka długości 2 zdania.
+                    longExplanation: string; // odpowiedź długości 10 zdań
+                    textSeo: string; // tekst SEO na stronę internetową długości 20 zdań. Powinien zawierać słowa kluczowe i informacje.
                 }
         `;
 
@@ -120,7 +114,5 @@ export const prepareDataForChatGpt = async (
       questionToChatGpt.saveAnswerWithKey,
       questionToChatGpt.question
     );
-
-    console.log(111111111111, ans);
   }
 };

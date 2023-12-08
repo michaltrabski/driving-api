@@ -1,4 +1,5 @@
-import { getQuestions } from "./app/utils";
+import { prepareDataForChatGpt } from "./app/askChatGpt";
+import { getPhpCode, getQuestions } from "./app/utils";
 
 const path = require("fs-extra");
 const fs = require("fs-extra");
@@ -27,6 +28,8 @@ const start = async () => {
     fs.removeSync(PHP_API);
 
     const questionsBig = getQuestions();
+    await prepareDataForChatGpt(questionsBig);
+
     createApiFile(`questions-big`, {
       questionsBigCount: questionsBig.length,
       questionsBig,
@@ -44,7 +47,7 @@ const start = async () => {
     //   allQuestionsWithExplanations,
     //   allExams,
     // } = getQuestionsData(questionsFromExcel);
-    // await prepareDataForChatGpt(allQuestionsWithExplanations);
+
     // return;
     // createApiFile("all-exams", {
     //   allExamsCount: allExams.length,
@@ -74,6 +77,6 @@ start();
 
 function createApiFile(fileName: string, data: any) {
   fs.outputJsonSync(`${PHP_API}/${fileName}.json`, data);
-  // fs.outputFileSync(`${PHP_API}/${fileName}.php`, getPhpCode(fileName));
+  fs.outputFileSync(`${PHP_API}/${fileName}.php`, getPhpCode(fileName));
   // fs.outputFileSync(`${PHP_API}/${fileName}-previev.html`, getHtmlCode(JSON.stringify(data, null, 2)));
 }
