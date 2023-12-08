@@ -1,17 +1,19 @@
+import { getQuestions } from "./app/utils";
+
 const path = require("fs-extra");
 const fs = require("fs-extra");
 require("dotenv").config();
 
-import {
-  prepareDataForChatGpt,
-  askChatGpt,
-  QuestionsToChatGpt,
-} from "./app/askChatGpt";
-import { getQuestionsData } from "./app/createQuestionsData";
-import { resizeMedia } from "./app/createQuestionsMedia";
-import { extractExcelData } from "./app/extractExcelData";
-import { unzip as unzipToFolder } from "./app/unzip";
-import { getHtmlCode, getPhpCode } from "./app/utils";
+// import {
+//   prepareDataForChatGpt,
+//   askChatGpt,
+//   QuestionsToChatGpt,
+// } from "./app/askChatGpt";
+// import { getQuestionsData } from "./app/createQuestionsData";
+// import { resizeMedia } from "./app/createQuestionsMedia";
+// import { extractExcelData } from "./app/extractExcelData";
+// import { unzip as unzipToFolder } from "./app/unzip";
+// import { getHtmlCode, getPhpCode } from "./app/utils";
 
 const PHP_API = "php/api";
 
@@ -22,7 +24,14 @@ const start = async () => {
   });
 
   try {
-    // fs.removeSync(PHP_API);
+    fs.removeSync(PHP_API);
+
+    const questionsBig = getQuestions();
+    createApiFile(`questions-big`, {
+      questionsBigCount: questionsBig.length,
+      questionsBig,
+    });
+
     // need to be fixed to move files to destination folder, npw it omit files not in zip folders
     // await unzipToFolder();
     // await resizeMedia();
@@ -65,6 +74,6 @@ start();
 
 function createApiFile(fileName: string, data: any) {
   fs.outputJsonSync(`${PHP_API}/${fileName}.json`, data);
-  fs.outputFileSync(`${PHP_API}/${fileName}.php`, getPhpCode(fileName));
+  // fs.outputFileSync(`${PHP_API}/${fileName}.php`, getPhpCode(fileName));
   // fs.outputFileSync(`${PHP_API}/${fileName}-previev.html`, getHtmlCode(JSON.stringify(data, null, 2)));
 }
