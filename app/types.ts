@@ -40,5 +40,10 @@ export interface QuestionBig {
   questionSource: string;
   relationToSafety: string;
   explanationTesty360: string;
-  explanationGpt3?: string;
+  explanationGpt3?: {
+    shortExplanation: string;
+    longExplanation: string;
+    textSeo: string;
+    other?: string;
+  };
 }

@@ -1,14 +1,12 @@
+const fs = require("fs-extra");
+
 const excel4 = require("../sourceData/questionsFromExcel042020.json");
 const excel5 = require("../sourceData/questionsFromExcel052020.json");
 const excel6 = require("../sourceData/questionsFromExcel27062023.json");
 const expl360 = require("../sourceData/wyjasnienia360_08122023.json");
 
-import {
-  NormalizedQuestionE4,
-  NormalizedQuestionE5,
-  NormalizedQuestionE6,
-  QuestionBig,
-} from "./types";
+import { CHAT_GPT_ANSWERS } from "./askChatGpt";
+import { NormalizedQuestionE4, NormalizedQuestionE5, NormalizedQuestionE6, QuestionBig } from "./types";
 
 const TP = "Treść pytania";
 const NR = "Numer pytania";
@@ -62,6 +60,34 @@ export const getQuestions = (): QuestionBig[] => {
       questionBig.questionSource = q6.questionSource;
       questionBig.relationToSafety = q6.relationToSafety;
       questionBig.explanationTesty360 = findExplanationTesty360ByText(q6.text);
+
+      const explanationGpt3 = fs.readJsonSync(`${CHAT_GPT_ANSWERS}/${q6.id}.json`, {
+        throws: false,
+      });
+
+      if (explanationGpt3 && explanationGpt3.answer) {
+        const ans = explanationGpt3.answer;
+        const shortExplanation = ans.match(/shortExplanation:([\s\S]*?)longExplanation:/gi);
+        const longExplanation = ans.match(/longExplanation:([\s\S]*?)textSeo:/gi);
+        const textSeo = ans.match(/textSeo:([\s\S]*?)$/gi);
+
+        console.log(ans, shortExplanation, longExplanation, textSeo);
+
+        questionBig.explanationGpt3 = {
+          shortExplanation: shortExplanation
+            ? shortExplanation[0]
+                .replace("shortExplanation:", "")
+                .replace(/\n/g, "")
+                .replace("longExplanation:", "")
+                .trim()
+            : "",
+          longExplanation: longExplanation
+            ? longExplanation[0].replace("longExplanation:", "").replace(/\n/g, "").replace("textSeo:", "").trim()
+            : "",
+          textSeo: textSeo ? textSeo[0].replace("textSeo:", "").replace(/\n/g, "").trim() : "",
+          other: ans,
+        };
+      }
 
       return questionBig;
     }
@@ -117,13 +143,7 @@ export const getQuestionsIds = () => {
   const e5 = normalizeExcel5Questions();
   const e6 = normalizeExcel6Questions();
 
-  const ids = Array.from(
-    new Set([
-      ...e6.map((q) => q.id),
-      ...e5.map((q) => q.id),
-      ...e4.map((q) => q.id),
-    ])
-  );
+  const ids = Array.from(new Set([...e6.map((q) => q.id), ...e5.map((q) => q.id), ...e4.map((q) => q.id)]));
 
   return { ids, e4, e5, e6 };
 };
@@ -444,9 +464,7 @@ export function reverseNormalizeABCTAKNIE(answer: string): string | never {
     return "c";
   }
 
-  throw new Error(
-    `ERROR: reverseNormalizeABCTAKNIE: answer: ${answer} is not valid`
-  );
+  throw new Error(`ERROR: reverseNormalizeABCTAKNIE: answer: ${answer} is not valid`);
 }
 
 // // export function normalizeMediaName(mediaName: string) {
