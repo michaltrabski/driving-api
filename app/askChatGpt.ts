@@ -13,8 +13,8 @@ export interface QuestionsToChatGpt {
   question: string;
 }
 
-export const askChatGpt = async (saveAnswerWithKey: string, question: string) => {
-  await new Promise((resolve) => setTimeout(resolve, 555));
+export const askChatGpt = async (saveAnswerWithKey: string, question: string, i: number) => {
+  await new Promise((resolve) => setTimeout(resolve, 1));
 
   // console.log("I blocked askChatGpt function, check it and uncomment");
   // return;
@@ -25,7 +25,7 @@ export const askChatGpt = async (saveAnswerWithKey: string, question: string) =>
     });
 
     if (jsonWithAnswer && jsonWithAnswer.answer) {
-      console.log("Chat GPT answer from file:", question.slice(0, 30), jsonWithAnswer.answer.slice(0, 30));
+      console.log(i, "Chat GPT answer from file");
       return jsonWithAnswer.answer;
     }
   } catch (error) {
@@ -48,7 +48,7 @@ export const askChatGpt = async (saveAnswerWithKey: string, question: string) =>
     throw new Error("Chat GPT answer is empty");
   }
 
-  console.log("Chat GPT answer from chat: ", question.slice(0, 30), answer?.slice(0, 30));
+  console.log(i, "Chat GPT answer from chat");
 
   fs.outputJsonSync(`${CHAT_GPT_ANSWERS}/${saveAnswerWithKey}.json`, {
     userQuestion: question,
@@ -59,7 +59,7 @@ export const askChatGpt = async (saveAnswerWithKey: string, question: string) =>
 };
 
 export const prepareDataForChatGpt = async (questionsBig: QuestionBig[]) => {
-  const questions = questionsBig.filter((q) => q.explanationTesty360).slice(0, 10);
+  const questions = questionsBig.filter((q) => q.explanationTesty360).slice(0, 333);
 
   const questionsToChatGpt: QuestionsToChatGpt[] = questions.map((q) => {
     const saveAnswerWithKey = q.id;
@@ -89,7 +89,9 @@ export const prepareDataForChatGpt = async (questionsBig: QuestionBig[]) => {
     };
   });
 
+  let i = 0;
   for (const questionToChatGpt of questionsToChatGpt) {
-    const ans = await askChatGpt(questionToChatGpt.saveAnswerWithKey, questionToChatGpt.question);
+    i++;
+    const ans = await askChatGpt(questionToChatGpt.saveAnswerWithKey, questionToChatGpt.question, i);
   }
 };

@@ -1,5 +1,5 @@
 import { prepareDataForChatGpt } from "./app/askChatGpt";
-import { getPhpCode, getQuestions } from "./app/utils";
+import { getCategories, getPhpCode, getQuestionsBig, getQuestionsSmall } from "./app/utils";
 
 const path = require("fs-extra");
 const fs = require("fs-extra");
@@ -27,12 +27,28 @@ const start = async () => {
   try {
     fs.removeSync(PHP_API);
 
-    const questionsBig = getQuestions();
-    await prepareDataForChatGpt(questionsBig);
+    const questionsBig = getQuestionsBig();
+    const questionsSmall = getQuestionsSmall(questionsBig);
+    const categories = getCategories(questionsBig);
+    console.log("categories", categories);
+    console.log("questionsBig", questionsBig[0]);
+    console.log("questionsSmall", questionsSmall[0]);
+
+    // await prepareDataForChatGpt(questionsBig);
 
     createApiFile(`questions-big`, {
       questionsBigCount: questionsBig.length,
       questionsBig,
+    });
+
+    createApiFile(`questions-small`, {
+      questionsSmallCount: questionsSmall.length,
+      questionsSmall,
+    });
+
+    createApiFile(`categories`, {
+      categoriesCount: categories.length,
+      categories,
     });
 
     // need to be fixed to move files to destination folder, npw it omit files not in zip folders
