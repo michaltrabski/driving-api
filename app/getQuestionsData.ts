@@ -2,22 +2,18 @@ const fs = require("fs-extra");
 const _ = require("lodash");
 
 import { convertExcelToJson } from "./excelToJson";
-import { getAllExams } from "./getAllExams";
+import { getAllExamsByCategory } from "./getAllExams";
 import { getAllExplanations } from "./getAllExplanations";
-import { getAllQuestionsAndCategories    } from "./getAllQuestions";
+import { getAllQuestionsAndCategories } from "./getAllQuestions";
 import { getAllQuestionsWithExplanations } from "./getAllQuestionsWithExplanations";
 import { AllQuestionsData, Explanation, QuestionFromExcel } from "./types";
 
 const EXCEL_SHEET_NAME = "Arkusz1"; // "Treść pytania";
 
-
-
 export interface ExcelFileInfo {
   excelSource: string;
   isNewest: boolean;
 }
-
-
 
 // export const createQuestionsData = (excels: ExcelFileInfo[]): AllQuestionsData => {
 //   const newestExcel = excels.find((excel) => excel.isNewest) || excels[0];
@@ -30,7 +26,7 @@ export interface ExcelFileInfo {
 export const getQuestionsFromExcel = (excel: ExcelFileInfo): AllQuestionsData => {
   const excelFile = convertExcelToJson(excel.excelSource);
 
-  console.log("excelFile===", EXCEL_SHEET_NAME, excelFile[EXCEL_SHEET_NAME][0])
+  console.log("excelFile===", EXCEL_SHEET_NAME, excelFile[EXCEL_SHEET_NAME][0]);
 
   const excelQuestions = excelFile[EXCEL_SHEET_NAME] as QuestionFromExcel[];
 
@@ -48,7 +44,7 @@ export const getQuestionsFromExcel = (excel: ExcelFileInfo): AllQuestionsData =>
   console.log(4, "allQuestionsWithExplanations.length ===", allQuestionsWithExplanations.length);
 
   // ----------------------------------------
-  const { allExams } = getAllExams(allQuestions,allQuestionsWithExplanations);
+  const { allExams } = getAllExamsByCategory(allQuestions, allQuestionsWithExplanations);
   console.log(5, "allExams.length ===", allExams.length);
 
   const allQuestionsData: AllQuestionsData = {

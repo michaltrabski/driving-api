@@ -1,7 +1,7 @@
 const fs = require("fs-extra");
 const _ = require("lodash");
 
-import { getAllExams } from "./getAllExams";
+import { getAllExamsByCategory } from "./getAllExams";
 import { getAllExplanations } from "./getAllExplanations";
 import { getAllQuestionsAndCategories } from "./getAllQuestions";
 import { getAllQuestionsSmall } from "./getAllQuestionsSmall";
@@ -13,9 +13,13 @@ export const getQuestionsData = (questionsFromExcel: QuestionFromExcel[]): AllQu
 
   const allExplanations = getAllExplanations();
 
-  const allQuestionsWithExplanations = getAllQuestionsWithExplanations(allQuestions, allExplanations, questionsFromExcel);
+  const allQuestionsWithExplanations = getAllQuestionsWithExplanations(
+    allQuestions,
+    allExplanations,
+    questionsFromExcel
+  );
 
-  const { allExams } = getAllExams(allQuestionsWithExplanations);
+  const { allExams } = getAllExamsByCategory(allQuestionsWithExplanations);
 
   const allQuestionsSmall = getAllQuestionsSmall(allQuestionsWithExplanations);
 

@@ -8,17 +8,24 @@ const expl360 = require("../sourceData/wyjasnienia360_08122023.json");
 const oldMasterQuestions = require("../sourceData/masterQuestions.json");
 
 import { CHAT_GPT_ANSWERS } from "./askChatGpt";
-import { NormalizedQuestionE4, NormalizedQuestionE5, NormalizedQuestionE6, QuestionBig, QuestionSmall } from "./types";
+import {
+  CategoriesObj,
+  NormalizedQuestionE4,
+  NormalizedQuestionE5,
+  NormalizedQuestionE6,
+  QuestionBig,
+  QuestionSmall,
+} from "./types";
 
 const TP = "Treść pytania";
 const NR = "Numer pytania";
 
-export const getQuestionsBig = (): QuestionBig[] => {
+export const getQuestionsBig = (limit: number): QuestionBig[] => {
   const { ids, e4, e5, e6 } = getQuestionsIds();
 
   console.log({ ids: ids.length, e4: e4.length, e5: e5.length, e6: e6.length });
 
-  const questions = ids.slice(0, 555555555).map((id) => {
+  const questions = ids.slice(0, limit).map((id) => {
     const q4 = e4.find((q) => q.id === id);
     const q5 = e5.find((q) => q.id === id);
     const q6 = e6.find((q) => q.id === id);
@@ -194,12 +201,35 @@ export const getCategories = (questions: QuestionBig[]) => {
   return categoriesOrdered;
 };
 
+export const getCategoriesObj = (questions: QuestionBig[]): CategoriesObj => {
+  const categories = Array.from(new Set(questions.flatMap((q) => q.categories)));
+  const categoriesOrdered = categories.sort((a, b) => a.localeCompare(b));
+
+  const categoriesWithCount = categoriesOrdered.reduce((acc, category) => {
+    const count = questions.filter((q) => q.categories.includes(category)).length;
+
+    acc[category] = count;
+
+    return acc;
+  }, {} as { [key: string]: number });
+
+  const categoriesObj: CategoriesObj = {
+    categoriesCount: categoriesOrdered.length,
+    categories: categoriesOrdered,
+    categoriesWithCount,
+  };
+
+  return categoriesObj;
+};
+
 export const getQuestionsIds = () => {
   const e4 = normalizeExcel4Questions();
   const e5 = normalizeExcel5Questions();
   const e6 = normalizeExcel6Questions();
 
-  const ids = Array.from(new Set([...e6.map((q) => q.id), ...e5.map((q) => q.id), ...e4.map((q) => q.id)]));
+  const ids = Array.from(new Set([...e6.map((q) => q.id), ...e5.map((q) => q.id), ...e4.map((q) => q.id)])).sort(
+    () => Math.random() - 0.5
+  );
 
   return { ids, e4, e5, e6 };
 };
@@ -574,5 +604,5 @@ export function reverseNormalizeABCTAKNIE(answer: string): string | never {
 // //   throw new Error(`ERROR: normalizeMediaName: mediaName: ${mediaName} is not valid`);
 // // }
 
-// // export const isAnswerYesNo = (r: RightAnswer) => r === "t" || r === "n";
-// // export const IsAnswerABC = (r: RightAnswer) => r === "a" || r === "b" || r === "c";
+export const isAnswerYesNo = (r: string) => r === "t" || r === "n";
+export const IsAnswerABC = (r: string) => r === "a" || r === "b" || r === "c";

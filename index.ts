@@ -1,5 +1,7 @@
 import { prepareDataForChatGpt } from "./app/askChatGpt";
-import { getCategories, getPhpCode, getQuestionsBig, getQuestionsSmall } from "./app/utils";
+import { getAllExamsByCategory } from "./app/getAllExams";
+import { QuestionBigObj, QuestionSmallObj } from "./app/types";
+import { getCategories, getCategoriesObj, getPhpCode, getQuestionsBig, getQuestionsSmall } from "./app/utils";
 
 const path = require("fs-extra");
 const fs = require("fs-extra");
@@ -27,29 +29,40 @@ const start = async () => {
   try {
     fs.removeSync(PHP_API);
 
-    const questionsBig = getQuestionsBig();
+    const questionsBig = getQuestionsBig(555555555);
     const questionsSmall = getQuestionsSmall(questionsBig);
-    const categories = getCategories(questionsBig);
-    console.log("categories", categories);
-    console.log("questionsBig", questionsBig[0]);
-    console.log("questionsSmall", questionsSmall[0]);
+    const categoriesObj = getCategoriesObj(questionsBig);
+    const examDataObj_a = getAllExamsByCategory(questionsSmall, "a", 95);
+    const examDataObj_b = getAllExamsByCategory(questionsSmall, "b", 95);
+    const examDataObj_c = getAllExamsByCategory(questionsSmall, "c", 95);
+
+    // console.log("questionsBig", questionsBig[0]);
+    // console.log("questionsSmall", questionsSmall[0]);
+    // console.log("categoriesObj", categoriesObj);
 
     // await prepareDataForChatGpt(questionsBig);
 
-    createApiFile(`questions-big`, {
+    const questionsBigObj: QuestionBigObj = {
       questionsBigCount: questionsBig.length,
+      categoriesObj,
       questionsBig,
-    });
+    };
 
-    createApiFile(`questions-small`, {
+    createApiFile(`questions-big`, questionsBigObj);
+
+    const questionsSmallObj: QuestionSmallObj = {
       questionsSmallCount: questionsSmall.length,
+      categoriesObj,
       questionsSmall,
-    });
+    };
 
-    createApiFile(`categories`, {
-      categoriesCount: categories.length,
-      categories,
-    });
+    createApiFile(`questions-small`, questionsSmallObj);
+
+    createApiFile(`categories`, categoriesObj);
+
+    createApiFile(`exams-a`, examDataObj_a);
+    createApiFile(`exams-b`, examDataObj_b);
+    createApiFile(`exams-c`, examDataObj_c);
 
     // need to be fixed to move files to destination folder, npw it omit files not in zip folders
     // await unzipToFolder();

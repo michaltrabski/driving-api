@@ -58,6 +58,12 @@ export interface QuestionBig {
   deprecated_low: any;
 }
 
+export interface QuestionBigObj {
+  questionsBigCount: number;
+  categoriesObj: CategoriesObj;
+  questionsBig: QuestionBig[];
+}
+
 export interface QuestionSmall {
   slug: string;
   isActive: boolean;
@@ -71,4 +77,30 @@ export interface QuestionSmall {
   media: string;
   categories: string[];
   score: number;
+}
+
+export interface QuestionSmallObj {
+  questionsSmallCount: number;
+  categoriesObj: CategoriesObj;
+  questionsSmall: QuestionSmall[];
+}
+
+export interface CategoriesObj {
+  categoriesCount: number;
+  categories: string[];
+  categoriesWithCount: { [key: string]: number };
+}
+
+export interface ExamData {
+  examName: string;
+  examSlug: string;
+  examCategory: string;
+  minPointsToPass: number;
+  allPossiblePoints: number;
+  examQuestions32: QuestionSmall[];
+}
+
+export interface ExamDataObj {
+  examsCount: number;
+  exams: ExamData[];
 }
