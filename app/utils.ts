@@ -20,7 +20,7 @@ import {
 const TP = "Treść pytania";
 const NR = "Numer pytania";
 
-export const getQuestionsBig = (limit: number): QuestionBig[] => {
+export const getQuestionsBig = (limit = 999999): QuestionBig[] => {
   const { ids, e4, e5, e6 } = getQuestionsIds();
 
   console.log({ ids: ids.length, e4: e4.length, e5: e5.length, e6: e6.length });

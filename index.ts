@@ -29,18 +29,15 @@ const start = async () => {
   try {
     fs.removeSync(PHP_API);
 
-    const questionsBig = getQuestionsBig(555555555);
+    const questionsBig = getQuestionsBig();
+
     const questionsSmall = getQuestionsSmall(questionsBig);
     const categoriesObj = getCategoriesObj(questionsBig);
     const examDataObj_a = getAllExamsByCategory(questionsSmall, "a", 95);
     const examDataObj_b = getAllExamsByCategory(questionsSmall, "b", 95);
     const examDataObj_c = getAllExamsByCategory(questionsSmall, "c", 95);
 
-    // console.log("questionsBig", questionsBig[0]);
-    // console.log("questionsSmall", questionsSmall[0]);
-    // console.log("categoriesObj", categoriesObj);
-
-    // await prepareDataForChatGpt(questionsBig);
+    await prepareDataForChatGpt(questionsBig);
 
     const questionsBigObj: QuestionBigObj = {
       questionsBigCount: questionsBig.length,
@@ -48,18 +45,15 @@ const start = async () => {
       questionsBig,
     };
 
-    createApiFile(`questions-big`, questionsBigObj);
-
     const questionsSmallObj: QuestionSmallObj = {
       questionsSmallCount: questionsSmall.length,
       categoriesObj,
       questionsSmall,
     };
 
+    createApiFile(`questions-big`, questionsBigObj);
     createApiFile(`questions-small`, questionsSmallObj);
-
     createApiFile(`categories`, categoriesObj);
-
     createApiFile(`exams-a`, examDataObj_a);
     createApiFile(`exams-b`, examDataObj_b);
     createApiFile(`exams-c`, examDataObj_c);
@@ -70,30 +64,6 @@ const start = async () => {
     // const questionsFromExcel = extractExcelData();
     // console.log("questionsFromExcel.length", questionsFromExcel.length,questionsFromExcel[0]);
     // createApiFile("questions-from-excel", { questionsFromExcel });
-    // const {
-    //   allQuestionsSmall,
-    //   allCategories,
-    //   allQuestionsWithExplanations,
-    //   allExams,
-    // } = getQuestionsData(questionsFromExcel);
-
-    // return;
-    // createApiFile("all-exams", {
-    //   allExamsCount: allExams.length,
-    //   allExams,
-    // });
-    // createApiFile("all-categories", {
-    //   allCategoriesCount: allCategories.length,
-    //   allCategories,
-    // });
-    // createApiFile(`all-questions-big`, {
-    //   allQuestionsBigCount: allQuestionsWithExplanations.length,
-    //   allQuestionsBig: allQuestionsWithExplanations,
-    // });
-    // createApiFile(`all-questions-small`, {
-    //   allQuestionsSmallCount: allQuestionsSmall.length,
-    //   allQuestionsSmall: allQuestionsSmall,
-    // });
   } catch (err) {
     console.log("FAIL BECAUSE OF CATCH ERROR", err);
     // start();
@@ -106,6 +76,6 @@ start();
 
 function createApiFile(fileName: string, data: any) {
   fs.outputJsonSync(`${PHP_API}/${fileName}.json`, data);
-  fs.outputFileSync(`${PHP_API}/${fileName}.php`, getPhpCode(fileName));
+  // fs.outputFileSync(`${PHP_API}/${fileName}.php`, getPhpCode(fileName));
   // fs.outputFileSync(`${PHP_API}/${fileName}-previev.html`, getHtmlCode(JSON.stringify(data, null, 2)));
 }

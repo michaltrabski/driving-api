@@ -59,7 +59,8 @@ export const askChatGpt = async (saveAnswerWithKey: string, question: string, i:
 };
 
 export const prepareDataForChatGpt = async (questionsBig: QuestionBig[]) => {
-  const questions = questionsBig.filter((q) => q.explanationTesty360).slice(0, 333);
+  const questions = questionsBig.filter((q) => q.explanationTesty360); // .slice(0, 999999);
+  console.log("questions.length", questions.length);
 
   const questionsToChatGpt: QuestionsToChatGpt[] = questions.map((q) => {
     const saveAnswerWithKey = q.id;
@@ -85,7 +86,7 @@ export const prepareDataForChatGpt = async (questionsBig: QuestionBig[]) => {
 
     return {
       saveAnswerWithKey,
-      question,
+      question: question.slice(0, 4097 - 1),
     };
   });
 

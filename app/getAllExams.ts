@@ -19,7 +19,7 @@ export const getAllExamsByCategory = (
   const questionsCopy = [...questions];
 
   const generateSingleExam = (nr: number): ExamData => {
-    console.log(nr, ")", questions.length);
+    // console.log(nr, ")", questions.length);
     const examName = `Egzamin nr ${nr} na kategorię ${examCategory.toUpperCase()}`;
     const examSlug = `egzamin-nr-${nr}-na-kategorie-${examCategory}`;
 
